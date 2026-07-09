@@ -7,18 +7,25 @@ const VALID_ICONS = ["task", "code", "book", "clipboard", "file", "folder", "cal
 
 const iconAssetPaths = {
   analytics: "assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg",
+  brightness: "assets/icons/raw/brightness.svg",
+  "circle-user": "assets/icons/raw/circle-user.svg",
   task: "assets/icons/raw/tasks-app-svgrepo-com.svg",
   code: "assets/icons/raw/com-laptop-code-svgrepo-com.svg",
   book: "assets/icons/raw/book-closed-svgrepo-com.svg",
   clipboard: "assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg",
   file: "assets/icons/raw/file-folder-2-svgrepo-com.svg",
+  edit: "assets/icons/raw/edit.svg",
   folder: "assets/icons/raw/folder-alt-svgrepo-com.svg",
+  "moon-stars": "assets/icons/raw/moon-stars.svg",
   calendar: "assets/icons/raw/calendar-svgrepo-com.svg",
   user: "assets/icons/raw/people-svgrepo-com.svg",
   check: "assets/icons/raw/check-mark-circle-svgrepo-com.svg",
+  "progress-complete": "assets/icons/raw/progress-complete.svg",
   star: "assets/icons/raw/star-fall-svgrepo-com.svg",
   dashboard: "assets/icons/raw/dashboard-svgrepo-com.svg",
-  settings: "assets/icons/raw/setting-2-svgrepo-com.svg"
+  settings: "assets/icons/raw/setting-2-svgrepo-com.svg",
+  trash: "assets/icons/raw/trash.svg",
+  "steps-carreer": "assets/icons/raw/steps-carreer.svg"
 };
 
 const translations = {
@@ -28,7 +35,23 @@ const translations = {
       dashboard: "Dashboard",
       goodMorning: "Good morning",
       summaryToday: "Here is your task summary for today.",
-      globalSearchPlaceholder: "Search tasks, projects, or tags...",
+      commandTriggerText: "Search or run command...",
+      commandPaletteTitle: "Command Palette",
+      commandPaletteSubtitle: "Search actions and jump around TaskFlow.",
+      commandSearchPlaceholder: "Type a command...",
+      commandAddNewTask: "Add New Task",
+      commandGoDashboard: "Go to Dashboard",
+      commandGoTasks: "Go to Tasks",
+      commandGoCalendar: "Go to Calendar",
+      commandGoAnalytics: "Go to Analytics",
+      commandGoSettings: "Go to Settings",
+      commandToggleTheme: "Toggle Theme",
+      commandToggleLanguage: "Toggle Language",
+      commandExportJson: "Export JSON",
+      commandImportJson: "Import JSON",
+      commandUnavailable: "Not available yet",
+      noCommandsFound: "No commands found.",
+      closeCommandPalette: "Close command palette",
       taskSearchPlaceholder: "Search tasks...",
       newTask: "New Task",
       addTask: "Add Task",
@@ -128,7 +151,23 @@ const translations = {
       dashboard: "แดชบอร์ด",
       goodMorning: "สวัสดี",
       summaryToday: "นี่คือภาพรวมงานของคุณวันนี้",
-      globalSearchPlaceholder: "ค้นหางาน โปรเจกต์ หรือแท็ก...",
+      commandTriggerText: "ค้นหา หรือใช้คำสั่ง...",
+      commandPaletteTitle: "ชุดคำสั่ง",
+      commandPaletteSubtitle: "ค้นหาการทำงานและไปยังส่วนต่าง ๆ ของ TaskFlow",
+      commandSearchPlaceholder: "พิมพ์คำสั่ง...",
+      commandAddNewTask: "เพิ่มงานใหม่",
+      commandGoDashboard: "ไปที่แดชบอร์ด",
+      commandGoTasks: "ไปที่งาน",
+      commandGoCalendar: "ไปที่ปฏิทิน",
+      commandGoAnalytics: "ไปที่วิเคราะห์",
+      commandGoSettings: "ไปที่ตั้งค่า",
+      commandToggleTheme: "สลับธีม",
+      commandToggleLanguage: "สลับภาษา",
+      commandExportJson: "ส่งออก JSON",
+      commandImportJson: "นำเข้า JSON",
+      commandUnavailable: "ยังไม่พร้อมใช้งาน",
+      noCommandsFound: "ไม่พบคำสั่ง",
+      closeCommandPalette: "ปิดชุดคำสั่ง",
       taskSearchPlaceholder: "ค้นหางาน...",
       newTask: "งานใหม่",
       addTask: "เพิ่มงาน",
@@ -246,11 +285,15 @@ const state = {
   selectedCalendarDate: initialCalendarDate,
   editingTaskId: null,
   selectedTaskIcon: "task",
-  iconManuallySelected: false
+  iconManuallySelected: false,
+  commandQuery: ""
 };
 
 const elements = {
-  globalSearch: document.querySelector("#globalSearch"),
+  commandTrigger: document.querySelector("#commandTrigger"),
+  commandDialog: document.querySelector("#commandDialog"),
+  commandInput: document.querySelector("#commandInput"),
+  commandList: document.querySelector("#commandList"),
   taskSearch: document.querySelector("#taskSearch"),
   statusFilter: document.querySelector("#statusFilter"),
   priorityFilter: document.querySelector("#priorityFilter"),
@@ -306,6 +349,7 @@ function bindEvents() {
   document.querySelector("#emptyAddButton").addEventListener("click", openAddModal);
   document.querySelector("#closeModalButton").addEventListener("click", closeModal);
   document.querySelector("#cancelModalButton").addEventListener("click", closeModal);
+  document.querySelector("#closeCommandButton").addEventListener("click", closeCommandPalette);
   document.querySelector("#exportButton").addEventListener("click", exportTasks);
   document.querySelector("#clearButton").addEventListener("click", clearAllData);
   document.querySelector("#prevMonthButton").addEventListener("click", () => changeCalendarMonth(-1));
@@ -313,6 +357,10 @@ function bindEvents() {
   document.querySelector("#viewNoDueDateTasks").addEventListener("click", showTasksSection);
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
+  elements.commandTrigger.addEventListener("click", openCommandPalette);
+  elements.commandDialog.addEventListener("click", handleCommandDialogClick);
+  elements.commandInput.addEventListener("input", handleCommandSearch);
+  elements.commandList.addEventListener("click", handleCommandSelect);
   elements.importInput.addEventListener("change", importTasks);
   elements.taskForm.addEventListener("submit", saveTaskFromForm);
   elements.taskTitle.addEventListener("input", clearTaskTitleError);
@@ -321,7 +369,6 @@ function bindEvents() {
   elements.calendarGrid.addEventListener("click", handleCalendarDateClick);
   elements.selectedDayTasks.addEventListener("click", handleCalendarTaskClick);
 
-  elements.globalSearch.addEventListener("input", syncSearch);
   elements.taskSearch.addEventListener("input", syncSearch);
   elements.statusFilter.addEventListener("change", (event) => {
     state.statusFilter = event.target.value;
@@ -339,7 +386,7 @@ function bindEvents() {
   document.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
-      elements.globalSearch.focus();
+      openCommandPalette();
     }
   });
 }
@@ -417,6 +464,8 @@ function applyLanguage() {
   renderLanguageButton();
   elements.languageToggle.setAttribute("aria-label", t("toggleLanguage"));
   elements.themeToggle.setAttribute("aria-label", t("toggleTheme"));
+  elements.commandTrigger.setAttribute("aria-label", t("commandTriggerText"));
+  document.querySelector("#closeCommandButton").setAttribute("aria-label", t("closeCommandPalette"));
   elements.taskIconPicker.setAttribute("aria-label", t("taskIcon"));
   document.querySelector("#closeModalButton").setAttribute("aria-label", t("closeModal"));
   updateModalCopy();
@@ -438,6 +487,7 @@ function applyLanguage() {
 
   updateSelectOptionLabels();
   renderIconPicker();
+  renderCommandList();
 }
 
 function updateModalCopy() {
@@ -706,8 +756,28 @@ function handleCalendarDateClick(event) {
 }
 
 function showTasksSection() {
-  location.hash = "tasks";
-  document.querySelector("#tasks").scrollIntoView({ behavior: "smooth", block: "start" });
+  navigateToSection("tasks");
+}
+
+function navigateToSection(sectionId) {
+  const target = document.querySelector(`#${sectionId}`);
+  location.hash = sectionId;
+  updateActiveNav(sectionId);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function updateActiveNav(sectionId) {
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    const isActive = item.getAttribute("href") === `#${sectionId}`;
+    item.classList.toggle("active", isActive);
+    if (isActive) {
+      item.setAttribute("aria-current", "page");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
 }
 
 function sortCalendarTasks(a, b) {
@@ -781,7 +851,8 @@ function getIconPath(iconName) {
 }
 
 function getIconMarkup(iconName, className = "ui-icon") {
-  return `<span class="${className}" style="--icon-url: url('${escapeHtml(getIconPath(iconName))}')" aria-hidden="true"></span>`;
+  const classes = className.split(" ").includes("ui-icon") ? className : `${className} ui-icon`;
+  return `<span class="${classes}" style="--icon-url: url('${escapeHtml(getIconPath(iconName))}')" aria-hidden="true"></span>`;
 }
 
 function renderIconPicker() {
@@ -842,10 +913,10 @@ function renderTaskRow(task) {
       <td class="task-actions-cell" data-label="${t("actions")}">
         <div class="row-actions">
           <button class="action-button edit-action" type="button" data-action="edit" data-id="${task.id}" aria-label="${escapeHtml(t("editTaskNamed", { title: task.title }))}" title="${t("edit")}">
-            <span class="action-glyph edit-glyph" aria-hidden="true"></span>
+            ${getIconMarkup("edit", "action-icon")}
           </button>
           <button class="action-button delete-action" type="button" data-action="delete" data-id="${task.id}" aria-label="${escapeHtml(t("deleteTaskNamed", { title: task.title }))}" title="${t("delete")}">
-            <span class="action-glyph delete-glyph" aria-hidden="true"></span>
+            ${getIconMarkup("trash", "action-icon")}
           </button>
         </div>
       </td>
@@ -882,9 +953,88 @@ function sortByDueDate(a, b) {
 
 function syncSearch(event) {
   state.searchQuery = event.target.value;
-  elements.globalSearch.value = state.searchQuery;
   elements.taskSearch.value = state.searchQuery;
   renderTasks();
+}
+
+function getCommandItems() {
+  return [
+    { id: "add-task", icon: "task", labelKey: "commandAddNewTask", action: openAddModal },
+    { id: "dashboard", icon: "dashboard", labelKey: "commandGoDashboard", action: () => navigateToSection("dashboard") },
+    { id: "tasks", icon: "task", labelKey: "commandGoTasks", action: () => navigateToSection("tasks") },
+    { id: "calendar", icon: "calendar", labelKey: "commandGoCalendar", action: () => navigateToSection("calendar") },
+    { id: "analytics", icon: "analytics", labelKey: "commandGoAnalytics", action: () => navigateToSection("analytics") },
+    // Settings is visible in the sidebar, but there is not a real #settings section yet.
+    { id: "settings", icon: "settings", labelKey: "commandGoSettings", disabled: true },
+    { id: "toggle-theme", icon: "brightness", labelKey: "commandToggleTheme", action: toggleTheme },
+    { id: "toggle-language", icon: "book", labelKey: "commandToggleLanguage", action: toggleLanguage },
+    { id: "export-json", icon: "file", labelKey: "commandExportJson", action: exportTasks },
+    { id: "import-json", icon: "folder", labelKey: "commandImportJson", action: () => elements.importInput.click() }
+  ];
+}
+
+function openCommandPalette() {
+  if (elements.taskDialog.open) return;
+  state.commandQuery = "";
+  elements.commandInput.value = "";
+  renderCommandList();
+
+  if (typeof elements.commandDialog.showModal === "function") {
+    elements.commandDialog.showModal();
+  } else {
+    elements.commandDialog.setAttribute("open", "");
+  }
+  requestAnimationFrame(() => elements.commandInput.focus());
+}
+
+function closeCommandPalette() {
+  state.commandQuery = "";
+  if (elements.commandDialog.open) {
+    elements.commandDialog.close();
+  }
+}
+
+function handleCommandDialogClick(event) {
+  if (event.target === elements.commandDialog) {
+    closeCommandPalette();
+  }
+}
+
+function handleCommandSearch(event) {
+  state.commandQuery = event.target.value;
+  renderCommandList();
+}
+
+function renderCommandList() {
+  const query = state.commandQuery.trim().toLowerCase();
+  const commands = getCommandItems()
+    .map((command) => ({ ...command, label: t(command.labelKey) }))
+    .filter((command) => !query || command.label.toLowerCase().includes(query));
+
+  if (commands.length === 0) {
+    elements.commandList.innerHTML = `<p class="command-empty">${t("noCommandsFound")}</p>`;
+    return;
+  }
+
+  elements.commandList.innerHTML = commands.map((command) => `
+    <button class="command-item${command.disabled ? " is-disabled" : ""}" type="button" role="option" data-command-id="${command.id}" ${command.disabled ? "disabled" : ""}>
+      <span class="command-item-icon">${getIconMarkup(command.icon, "ui-icon")}</span>
+      <span>${escapeHtml(command.label)}</span>
+      ${command.disabled ? `<small>${t("commandUnavailable")}</small>` : ""}
+    </button>
+  `).join("");
+}
+
+function handleCommandSelect(event) {
+  const button = event.target instanceof Element
+    ? event.target.closest("[data-command-id]")
+    : null;
+  if (!button || button.disabled) return;
+
+  const command = getCommandItems().find((item) => item.id === button.dataset.commandId);
+  if (!command || typeof command.action !== "function") return;
+  closeCommandPalette();
+  command.action();
 }
 
 function openAddModal() {
@@ -1132,13 +1282,12 @@ function applyStoredTheme() {
 }
 
 function renderLanguageButton() {
-  elements.languageToggle.innerHTML = `${getIconMarkup("book", "toolbar-icon")}<span>${state.lang.toUpperCase()}</span>`;
+  elements.languageToggle.textContent = state.lang.toUpperCase();
 }
 
 function renderThemeButton(theme = document.documentElement.dataset.theme || "light") {
-  const iconName = theme === "dark" ? "star" : "check";
-  const label = theme === "dark" ? "L" : "D";
-  elements.themeToggle.innerHTML = `${getIconMarkup(iconName, "toolbar-icon")}<span>${label}</span>`;
+  const iconName = theme === "dark" ? "moon-stars" : "brightness";
+  elements.themeToggle.innerHTML = getIconMarkup(iconName, "toolbar-icon");
 }
 
 function countByStatus(tasks) {
