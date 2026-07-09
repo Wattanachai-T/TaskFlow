@@ -318,7 +318,6 @@ function bindEvents() {
   elements.taskTitle.addEventListener("input", clearTaskTitleError);
   elements.taskCategory.addEventListener("input", handleTaskCategoryInput);
   elements.taskIconPicker.addEventListener("click", handleIconPickerClick);
-  document.addEventListener("error", handleIconImageError, true);
   elements.calendarGrid.addEventListener("click", handleCalendarDateClick);
   elements.selectedDayTasks.addEventListener("click", handleCalendarTaskClick);
 
@@ -415,7 +414,7 @@ function getWeekdayLabels() {
 function applyLanguage() {
   document.documentElement.lang = state.lang;
   document.title = t("documentTitle");
-  elements.languageToggle.textContent = state.lang.toUpperCase();
+  renderLanguageButton();
   elements.languageToggle.setAttribute("aria-label", t("toggleLanguage"));
   elements.themeToggle.setAttribute("aria-label", t("toggleTheme"));
   elements.taskIconPicker.setAttribute("aria-label", t("taskIcon"));
@@ -599,6 +598,7 @@ function renderCalendar() {
     ? selectedTasks.map(renderSelectedDayTaskCard).join("")
     : `
       <div class="calendar-empty">
+        <span class="calendar-empty-icon">${getIconMarkup("calendar", "ui-icon")}</span>
         <span>${t("noTasksOnDate")}</span>
         <small>${t("selectAnotherDay")}</small>
       </div>
@@ -639,8 +639,13 @@ function renderCalendarDayCell(cell, today) {
 function renderSelectedDayTaskCard(task) {
   return `
     <button class="calendar-task-card" type="button" data-calendar-edit="${task.id}" aria-label="${escapeHtml(t("editTaskNamed", { title: task.title }))}">
-      <span class="calendar-task-title">${escapeHtml(task.title)}</span>
-      <span class="calendar-task-category">${escapeHtml(task.category)}</span>
+      <span class="calendar-task-heading">
+        <span class="calendar-task-icon">${getIconMarkup(getTaskIconName(task), "ui-icon")}</span>
+        <span>
+          <span class="calendar-task-title">${escapeHtml(task.title)}</span>
+          <span class="calendar-task-category">${escapeHtml(task.category)}</span>
+        </span>
+      </span>
       <span class="calendar-task-topline">
         <span class="badge priority-${task.priority}">${getPriorityLabel(task.priority)}</span>
         <span class="badge status-${task.status}">${getStatusLabel(task.status)}</span>
@@ -771,12 +776,12 @@ function getTaskIconName(task) {
 }
 
 function getIconPath(iconName) {
-  const safeIconName = VALID_ICONS.includes(iconName) ? iconName : "task";
+  const safeIconName = Object.prototype.hasOwnProperty.call(iconAssetPaths, iconName) ? iconName : "task";
   return iconAssetPaths[safeIconName] || iconAssetPaths.task;
 }
 
-function getIconImage(iconName, className) {
-  return `<img class="${className}" src="${escapeHtml(getIconPath(iconName))}" alt="" aria-hidden="true" loading="lazy">`;
+function getIconMarkup(iconName, className = "ui-icon") {
+  return `<span class="${className}" style="--icon-url: url('${escapeHtml(getIconPath(iconName))}')" aria-hidden="true"></span>`;
 }
 
 function renderIconPicker() {
@@ -784,7 +789,7 @@ function renderIconPicker() {
     const isSelected = state.selectedTaskIcon === iconName;
     return `
       <button class="icon-option${isSelected ? " active" : ""}" type="button" data-icon-option="${iconName}" aria-label="${escapeHtml(t("taskIcon"))}: ${iconName}" aria-pressed="${isSelected}">
-        ${getIconImage(iconName, "icon-picker-img")}
+        ${getIconMarkup(iconName, "icon-picker-img")}
       </button>
     `;
   }).join("");
@@ -809,15 +814,6 @@ function handleTaskCategoryInput() {
   setSelectedTaskIcon(inferCategoryIconName(elements.taskCategory.value));
 }
 
-function handleIconImageError(event) {
-  const image = event.target;
-  if (!(image instanceof HTMLImageElement)) return;
-  if (!image.classList.contains("task-icon-img") && !image.classList.contains("icon-picker-img")) return;
-  if (image.dataset.fallbackApplied === "true") return;
-  image.dataset.fallbackApplied = "true";
-  image.src = iconAssetPaths.task;
-}
-
 function renderTaskRow(task) {
   const isCompleted = task.status === "completed";
   return `
@@ -827,7 +823,7 @@ function renderTaskRow(task) {
       </td>
       <td data-label="${t("tasks")}">
         <div class="task-name">
-          <span class="task-icon" aria-hidden="true">${getIconImage(getTaskIconName(task), "task-icon-img")}</span>
+          <span class="task-icon" aria-hidden="true">${getIconMarkup(getTaskIconName(task), "task-icon-img")}</span>
           <div>
             <span class="task-title">${escapeHtml(task.title)}</span>
             <span class="task-category">${escapeHtml(task.category)}</span>
@@ -843,22 +839,13 @@ function renderTaskRow(task) {
           ${VALID_STATUSES.map((status) => `<option value="${status}" ${task.status === status ? "selected" : ""}>${getStatusLabel(status)}</option>`).join("")}
         </select>
       </td>
-      <td data-label="${t("actions")}">
+      <td class="task-actions-cell" data-label="${t("actions")}">
         <div class="row-actions">
           <button class="action-button edit-action" type="button" data-action="edit" data-id="${task.id}" aria-label="${escapeHtml(t("editTaskNamed", { title: task.title }))}" title="${t("edit")}">
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M12 20h9"></path>
-              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
-            </svg>
+            <span class="action-glyph edit-glyph" aria-hidden="true"></span>
           </button>
           <button class="action-button delete-action" type="button" data-action="delete" data-id="${task.id}" aria-label="${escapeHtml(t("deleteTaskNamed", { title: task.title }))}" title="${t("delete")}">
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M3 6h18"></path>
-              <path d="M8 6V4h8v2"></path>
-              <path d="M19 6l-1 14H6L5 6"></path>
-              <path d="M10 11v5"></path>
-              <path d="M14 11v5"></path>
-            </svg>
+            <span class="action-glyph delete-glyph" aria-hidden="true"></span>
           </button>
         </div>
       </td>
@@ -1135,13 +1122,23 @@ function toggleTheme() {
   const next = current === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = next;
   localStorage.setItem(THEME_KEY, next);
-  elements.themeToggle.textContent = next === "dark" ? "L" : "D";
+  renderThemeButton(next);
 }
 
 function applyStoredTheme() {
   const savedTheme = localStorage.getItem(THEME_KEY) || "light";
   document.documentElement.dataset.theme = savedTheme;
-  elements.themeToggle.textContent = savedTheme === "dark" ? "L" : "D";
+  renderThemeButton(savedTheme);
+}
+
+function renderLanguageButton() {
+  elements.languageToggle.innerHTML = `${getIconMarkup("book", "toolbar-icon")}<span>${state.lang.toUpperCase()}</span>`;
+}
+
+function renderThemeButton(theme = document.documentElement.dataset.theme || "light") {
+  const iconName = theme === "dark" ? "star" : "check";
+  const label = theme === "dark" ? "L" : "D";
+  elements.themeToggle.innerHTML = `${getIconMarkup(iconName, "toolbar-icon")}<span>${label}</span>`;
 }
 
 function countByStatus(tasks) {

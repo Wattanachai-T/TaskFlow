@@ -1,337 +1,592 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaskFlow Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Primary navigation">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">OK</span>
-        <span>TaskFlow</span>
-      </div>
-
-      <nav class="nav-list">
-        <a class="nav-item active" href="#dashboard" aria-current="page"><span>#</span> <b data-i18n="dashboard">Dashboard</b></a>
-        <a class="nav-item" href="#tasks"><span>+</span> <b data-i18n="tasks">Tasks</b></a>
-        <a class="nav-item" href="#calendar"><span>[]</span> <b data-i18n="calendar">Calendar</b></a>
-        <a class="nav-item" href="#analytics"><span>%</span> <b data-i18n="analytics">Analytics</b></a>
-        <a class="nav-item" href="#settings"><span>*</span> <b data-i18n="settings">Settings</b></a>
-      </nav>
-
-      <section class="local-card" aria-label="Local data notice">
-        <p class="eyebrow" data-i18n="localFirst">Local-first</p>
-        <h2 data-i18n="yourTasksStayHere">Your tasks stay here</h2>
-        <p data-i18n="localDataMessage">TaskFlow stores data in this browser only. Export JSON anytime to keep a backup.</p>
-      </section>
-
-      <section class="profile-card" aria-label="Demo profile">
-        <div class="avatar" aria-hidden="true">DU</div>
-        <div>
-          <strong data-i18n="demoUser">Demo User</strong>
-          <span>demo@taskflow.app</span>
-        </div>
-      </section>
-    </aside>
-
-    <main class="main-content" id="dashboard">
-      <header class="top-header">
-        <div>
-          <p class="eyebrow" data-i18n="goodMorning">Good morning</p>
-          <h1 data-i18n="dashboard">Dashboard</h1>
-          <p class="subtle" data-i18n="summaryToday">Here is your task summary for today.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Itim&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"
+            ><span class="ui-icon icon-check"></span
+          ></span>
+          <span>TaskFlow</span>
         </div>
 
-        <div class="header-actions" aria-label="Header tools">
-          <label class="search-field header-search">
-            <span aria-hidden="true">?</span>
-            <input id="globalSearch" type="search" placeholder="Search tasks, projects, or tags..." autocomplete="off" data-i18n-placeholder="globalSearchPlaceholder">
-            <kbd>Ctrl K</kbd>
-          </label>
-          <button class="toolbar-button language-button" id="languageToggle" type="button" aria-label="Toggle language">EN</button>
-          <button class="toolbar-button" id="themeToggle" type="button" aria-label="Toggle theme">D</button>
-          <button class="primary-button header-primary-button" id="newTaskButton" type="button">+ <span data-i18n="newTask">New Task</span></button>
-        </div>
-      </header>
+        <nav class="nav-list">
+          <a class="nav-item active" href="#dashboard" aria-current="page"
+            ><span
+              class="nav-icon ui-icon icon-dashboard"
+              aria-hidden="true"
+            ></span>
+            <b data-i18n="dashboard">Dashboard</b></a
+          >
+          <a class="nav-item" href="#tasks"
+            ><span class="nav-icon ui-icon icon-task" aria-hidden="true"></span>
+            <b data-i18n="tasks">Tasks</b></a
+          >
+          <a class="nav-item" href="#calendar"
+            ><span
+              class="nav-icon ui-icon icon-calendar"
+              aria-hidden="true"
+            ></span>
+            <b data-i18n="calendar">Calendar</b></a
+          >
+          <a class="nav-item" href="#analytics"
+            ><span
+              class="nav-icon ui-icon icon-analytics"
+              aria-hidden="true"
+            ></span>
+            <b data-i18n="analytics">Analytics</b></a
+          >
+          <a class="nav-item" href="#settings"
+            ><span
+              class="nav-icon ui-icon icon-settings"
+              aria-hidden="true"
+            ></span>
+            <b data-i18n="settings">Settings</b></a
+          >
+        </nav>
 
-      <section class="status-grid" aria-label="Task status summary">
-        <article class="status-card card status-not-started-card">
-          <div class="status-card-main">
-            <div>
-              <div class="card-heading">
-                <span class="icon-chip purple" aria-hidden="true">NS</span>
-                <span data-i18n="notStarted">Not Started</span>
-              </div>
-              <strong id="notStartedCount">0</strong>
-              <p data-i18n="tasksReady">Tasks ready to begin</p>
-            </div>
-            <div class="sparkline sparkline-purple" aria-hidden="true">
-              <svg viewBox="0 0 132 58" focusable="false">
-                <path class="spark-area" d="M5 45 C20 36 29 39 42 30 C55 20 66 27 78 23 C94 17 106 12 127 17 L127 58 L5 58 Z"></path>
-                <path class="spark-path" d="M5 45 C20 36 29 39 42 30 C55 20 66 27 78 23 C94 17 106 12 127 17"></path>
-                <circle cx="127" cy="17" r="4"></circle>
-              </svg>
-            </div>
-          </div>
-        </article>
+        <section class="local-card" aria-label="Local data notice">
+          <p class="eyebrow" data-i18n="localFirst">Local-first</p>
+          <h2 data-i18n="yourTasksStayHere">Your tasks stay here</h2>
+          <p data-i18n="localDataMessage">
+            TaskFlow stores data in this browser only. Export JSON anytime to
+            keep a backup.
+          </p>
+        </section>
 
-        <article class="status-card card featured status-in-progress-card">
-          <div class="status-card-main">
-            <div>
-              <div class="card-heading">
-                <span class="icon-chip blue" aria-hidden="true">IP</span>
-                <span data-i18n="inProgress">In Progress</span>
-              </div>
-              <strong id="inProgressCount">0</strong>
-              <p data-i18n="tasksMoving">Tasks moving forward</p>
-            </div>
-            <div class="sparkline sparkline-blue" aria-hidden="true">
-              <svg viewBox="0 0 132 58" focusable="false">
-                <path class="spark-area" d="M5 40 C19 31 31 34 44 24 C58 12 70 21 82 18 C96 14 108 25 127 10 L127 58 L5 58 Z"></path>
-                <path class="spark-path" d="M5 40 C19 31 31 34 44 24 C58 12 70 21 82 18 C96 14 108 25 127 10"></path>
-                <circle cx="127" cy="10" r="4"></circle>
-              </svg>
-            </div>
-          </div>
-        </article>
-
-        <article class="status-card card status-completed-card">
-          <div class="status-card-main">
-            <div>
-              <div class="card-heading">
-                <span class="icon-chip green" aria-hidden="true">OK</span>
-                <span data-i18n="completed">Completed</span>
-              </div>
-              <strong id="completedCount">0</strong>
-              <p data-i18n="tasksWrapped">Tasks wrapped up</p>
-            </div>
-            <div class="sparkline sparkline-green" aria-hidden="true">
-              <svg viewBox="0 0 132 58" focusable="false">
-                <path class="spark-area" d="M5 47 C19 46 28 34 40 35 C54 36 62 23 76 26 C92 30 105 18 127 14 L127 58 L5 58 Z"></path>
-                <path class="spark-path" d="M5 47 C19 46 28 34 40 35 C54 36 62 23 76 26 C92 30 105 18 127 14"></path>
-                <circle cx="127" cy="14" r="4"></circle>
-              </svg>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="analytics-grid" id="analytics" aria-label="Task analytics">
-        <article class="card chart-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow" data-i18n="overview">Overview</p>
-              <h2 data-i18n="weeklyTaskOverview">Weekly Task Overview</h2>
-            </div>
-            <span class="select-like" data-i18n="thisWeek">This Week</span>
-          </div>
-          <div class="bar-chart" id="weeklyChart" aria-label="Weekly completed task chart"></div>
-          <div class="chart-legend"><span></span> <b data-i18n="tasksCompleted">Tasks Completed</b></div>
-        </article>
-
-        <article class="card completion-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow" data-i18n="progress">Progress</p>
-              <h2 data-i18n="completionRate">Completion Rate</h2>
-            </div>
-            <span class="select-like" data-i18n="thisMonth">This Month</span>
-          </div>
-          <div class="completion-body">
-            <div class="donut-wrap">
-              <div class="donut" id="completionDonut">
-                <span id="completionRate">0%</span>
-                <small data-i18n="completed">Completed</small>
-              </div>
-            </div>
-            <div class="breakdown" id="completionBreakdown"></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="card calendar-section" id="calendar" aria-label="Calendar task view">
-        <div class="section-heading calendar-heading">
+        <section class="profile-card" aria-label="Demo profile">
+          <div class="avatar" aria-hidden="true">DU</div>
           <div>
-            <p class="eyebrow" data-i18n="plan">Plan</p>
-            <h2 data-i18n="calendar">Calendar</h2>
+            <strong data-i18n="demoUser">Demo User</strong>
+            <span>demo@taskflow.app</span>
           </div>
-          <button class="primary-button" id="calendarAddButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
-        </div>
+        </section>
+      </aside>
 
-        <div class="calendar-shell">
-          <article class="calendar-month-card" aria-label="Monthly calendar">
-            <div class="calendar-month-header">
-              <button class="calendar-nav-button" id="prevMonthButton" type="button" aria-label="Previous month">&lt;</button>
-              <h3 id="calendarMonthTitle">Month Year</h3>
-              <button class="calendar-nav-button" id="nextMonthButton" type="button" aria-label="Next month">&gt;</button>
+      <main class="main-content" id="dashboard">
+        <header class="top-header">
+          <div>
+            <p class="eyebrow" data-i18n="goodMorning">Good morning</p>
+            <h1 data-i18n="dashboard">Dashboard</h1>
+            <p class="subtle" data-i18n="summaryToday">
+              Here is your task summary for today.
+            </p>
+          </div>
+
+          <div class="header-actions" aria-label="Header tools">
+            <label class="search-field header-search">
+              <span class="search-icon" aria-hidden="true"></span>
+              <input
+                id="globalSearch"
+                type="search"
+                placeholder="Search tasks, projects, or tags..."
+                autocomplete="off"
+                data-i18n-placeholder="globalSearchPlaceholder"
+              />
+              <kbd>Ctrl K</kbd>
+            </label>
+            <button
+              class="toolbar-button language-button"
+              id="languageToggle"
+              type="button"
+              aria-label="Toggle language"
+            >
+              EN
+            </button>
+            <button
+              class="toolbar-button"
+              id="themeToggle"
+              type="button"
+              aria-label="Toggle theme"
+            >
+              D
+            </button>
+            <button
+              class="primary-button header-primary-button"
+              id="newTaskButton"
+              type="button"
+            >
+              <span
+                class="button-icon ui-icon icon-task"
+                aria-hidden="true"
+              ></span
+              ><span data-i18n="newTask">New Task</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="status-grid" aria-label="Task status summary">
+          <article class="status-card card status-not-started-card">
+            <div class="status-card-main">
+              <div>
+                <div class="card-heading">
+                  <span class="icon-chip purple" aria-hidden="true"
+                    ><span class="ui-icon icon-clipboard"></span
+                  ></span>
+                  <span data-i18n="notStarted">Not Started</span>
+                </div>
+                <strong id="notStartedCount">0</strong>
+                <p data-i18n="tasksReady">Tasks ready to begin</p>
+              </div>
+              <div class="sparkline sparkline-purple" aria-hidden="true">
+                <svg viewBox="0 0 132 58" focusable="false">
+                  <path
+                    class="spark-area"
+                    d="M5 45 C20 36 29 39 42 30 C55 20 66 27 78 23 C94 17 106 12 127 17 L127 58 L5 58 Z"
+                  ></path>
+                  <path
+                    class="spark-path"
+                    d="M5 45 C20 36 29 39 42 30 C55 20 66 27 78 23 C94 17 106 12 127 17"
+                  ></path>
+                  <circle cx="127" cy="17" r="4"></circle>
+                </svg>
+              </div>
             </div>
-            <div class="calendar-weekdays" aria-hidden="true">
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
-              <span>Sun</span>
-            </div>
-            <div class="calendar-grid" id="calendarGrid" aria-label="Days in month"></div>
           </article>
 
-          <aside class="selected-day-panel" aria-label="Selected day tasks">
-            <div class="selected-day-header">
+          <article class="status-card card featured status-in-progress-card">
+            <div class="status-card-main">
               <div>
-                <p class="eyebrow" data-i18n="selectedDate">Selected Date</p>
-                <h3 id="selectedDateTitle">Today</h3>
+                <div class="card-heading">
+                  <span class="icon-chip blue" aria-hidden="true"
+                    ><span class="ui-icon icon-code"></span
+                  ></span>
+                  <span data-i18n="inProgress">In Progress</span>
+                </div>
+                <strong id="inProgressCount">0</strong>
+                <p data-i18n="tasksMoving">Tasks moving forward</p>
               </div>
-              <span id="selectedDateCount">0 tasks</span>
-            </div>
-            <div class="selected-day-list" id="selectedDayTasks"></div>
-            <div class="no-due-summary">
-              <div>
-                <h3 data-i18n="noDueDate">No Due Date</h3>
-                <p><strong id="noDueDateCount">0</strong> <span data-i18n="tasksWithoutDueDate">tasks without a due date</span></p>
+              <div class="sparkline sparkline-blue" aria-hidden="true">
+                <svg viewBox="0 0 132 58" focusable="false">
+                  <path
+                    class="spark-area"
+                    d="M5 40 C19 31 31 34 44 24 C58 12 70 21 82 18 C96 14 108 25 127 10 L127 58 L5 58 Z"
+                  ></path>
+                  <path
+                    class="spark-path"
+                    d="M5 40 C19 31 31 34 44 24 C58 12 70 21 82 18 C96 14 108 25 127 10"
+                  ></path>
+                  <circle cx="127" cy="10" r="4"></circle>
+                </svg>
               </div>
-              <button class="ghost-button" id="viewNoDueDateTasks" type="button" data-i18n="viewInTasks">View in Tasks</button>
             </div>
-          </aside>
-        </div>
-      </section>
+          </article>
 
-      <section class="card tasks-section" id="tasks">
-        <div class="section-heading task-section-heading">
-          <div>
-            <p class="eyebrow" data-i18n="manage">Manage</p>
-            <h2 data-i18n="dailyTasks">Daily Tasks</h2>
+          <article class="status-card card status-completed-card">
+            <div class="status-card-main">
+              <div>
+                <div class="card-heading">
+                  <span class="icon-chip green" aria-hidden="true"
+                    ><span class="ui-icon icon-check"></span
+                  ></span>
+                  <span data-i18n="completed">Completed</span>
+                </div>
+                <strong id="completedCount">0</strong>
+                <p data-i18n="tasksWrapped">Tasks wrapped up</p>
+              </div>
+              <div class="sparkline sparkline-green" aria-hidden="true">
+                <svg viewBox="0 0 132 58" focusable="false">
+                  <path
+                    class="spark-area"
+                    d="M5 47 C19 46 28 34 40 35 C54 36 62 23 76 26 C92 30 105 18 127 14 L127 58 L5 58 Z"
+                  ></path>
+                  <path
+                    class="spark-path"
+                    d="M5 47 C19 46 28 34 40 35 C54 36 62 23 76 26 C92 30 105 18 127 14"
+                  ></path>
+                  <circle cx="127" cy="14" r="4"></circle>
+                </svg>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section
+          class="analytics-grid"
+          id="analytics"
+          aria-label="Task analytics"
+        >
+          <article class="card chart-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="overview">Overview</p>
+                <h2 data-i18n="weeklyTaskOverview">Weekly Task Overview</h2>
+              </div>
+              <span class="select-like" data-i18n="thisWeek">This Week</span>
+            </div>
+            <div
+              class="bar-chart"
+              id="weeklyChart"
+              aria-label="Weekly completed task chart"
+            ></div>
+            <div class="chart-legend">
+              <span></span> <b data-i18n="tasksCompleted">Tasks Completed</b>
+            </div>
+          </article>
+
+          <article class="card completion-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="progress">Progress</p>
+                <h2 data-i18n="completionRate">Completion Rate</h2>
+              </div>
+              <span class="select-like" data-i18n="thisMonth">This Month</span>
+            </div>
+            <div class="completion-body">
+              <div class="donut-wrap">
+                <div class="donut" id="completionDonut">
+                  <span id="completionRate">0%</span>
+                  <small data-i18n="completed">Completed</small>
+                </div>
+              </div>
+              <div class="breakdown" id="completionBreakdown"></div>
+            </div>
+          </article>
+        </section>
+
+        <section
+          class="card calendar-section"
+          id="calendar"
+          aria-label="Calendar task view"
+        >
+          <div class="section-heading calendar-heading">
+            <div>
+              <p class="eyebrow" data-i18n="plan">Plan</p>
+              <h2 data-i18n="calendar">Calendar</h2>
+            </div>
+            <button class="primary-button" id="calendarAddButton" type="button">
+              <span
+                class="button-icon ui-icon icon-task"
+                aria-hidden="true"
+              ></span
+              ><span data-i18n="addTask">Add Task</span>
+            </button>
           </div>
-          <div class="data-actions">
-            <button class="ghost-button" id="exportButton" type="button" data-i18n="exportJson">Export JSON</button>
-            <label class="ghost-button file-button">
-              <span data-i18n="importJson">Import JSON</span>
-              <input id="importInput" type="file" accept="application/json,.json">
+
+          <div class="calendar-shell">
+            <article class="calendar-month-card" aria-label="Monthly calendar">
+              <div class="calendar-month-header">
+                <button
+                  class="calendar-nav-button"
+                  id="prevMonthButton"
+                  type="button"
+                  aria-label="Previous month"
+                >
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+                <h3 id="calendarMonthTitle">Month Year</h3>
+                <button
+                  class="calendar-nav-button"
+                  id="nextMonthButton"
+                  type="button"
+                  aria-label="Next month"
+                >
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </div>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+              </div>
+              <div
+                class="calendar-grid"
+                id="calendarGrid"
+                aria-label="Days in month"
+              ></div>
+            </article>
+
+            <aside class="selected-day-panel" aria-label="Selected day tasks">
+              <div class="selected-day-header">
+                <div>
+                  <p class="eyebrow" data-i18n="selectedDate">Selected Date</p>
+                  <h3>
+                    <span
+                      class="heading-icon ui-icon icon-calendar"
+                      aria-hidden="true"
+                    ></span
+                    ><span id="selectedDateTitle">Today</span>
+                  </h3>
+                </div>
+                <span id="selectedDateCount">0 tasks</span>
+              </div>
+              <div class="selected-day-list" id="selectedDayTasks"></div>
+              <div class="no-due-summary">
+                <div>
+                  <h3>
+                    <span
+                      class="heading-icon ui-icon icon-folder"
+                      aria-hidden="true"
+                    ></span
+                    ><span data-i18n="noDueDate">No Due Date</span>
+                  </h3>
+                  <p>
+                    <strong id="noDueDateCount">0</strong>
+                    <span data-i18n="tasksWithoutDueDate"
+                      >tasks without a due date</span
+                    >
+                  </p>
+                </div>
+                <button
+                  class="ghost-button"
+                  id="viewNoDueDateTasks"
+                  type="button"
+                >
+                  <span
+                    class="button-icon ui-icon icon-task"
+                    aria-hidden="true"
+                  ></span
+                  ><span data-i18n="viewInTasks">View in Tasks</span>
+                </button>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="card tasks-section" id="tasks">
+          <div class="section-heading task-section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="manage">Manage</p>
+              <h2 data-i18n="dailyTasks">Daily Tasks</h2>
+            </div>
+            <div class="data-actions">
+              <button class="ghost-button" id="exportButton" type="button">
+                <span
+                  class="button-icon ui-icon icon-file"
+                  aria-hidden="true"
+                ></span
+                ><span data-i18n="exportJson">Export JSON</span>
+              </button>
+              <label class="ghost-button file-button">
+                <span
+                  class="button-icon ui-icon icon-folder"
+                  aria-hidden="true"
+                ></span
+                ><span data-i18n="importJson">Import JSON</span>
+                <input
+                  id="importInput"
+                  type="file"
+                  accept="application/json,.json"
+                />
+              </label>
+              <button class="danger-button" id="clearButton" type="button">
+                <span
+                  class="button-icon ui-icon icon-folder"
+                  aria-hidden="true"
+                ></span
+                ><span data-i18n="clearData">Clear Data</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="task-controls">
+            <label class="search-field">
+              <span class="search-icon" aria-hidden="true"></span>
+              <input
+                id="taskSearch"
+                type="search"
+                placeholder="Search tasks..."
+                autocomplete="off"
+                data-i18n-placeholder="taskSearchPlaceholder"
+              />
             </label>
-            <button class="danger-button" id="clearButton" type="button" data-i18n="clearData">Clear Data</button>
+            <label class="select-control">
+              <span
+                class="control-icon ui-icon icon-check"
+                aria-hidden="true"
+              ></span>
+              <select id="statusFilter" aria-label="Filter by status">
+                <option value="all">All Status</option>
+                <option value="not-started">Not Started</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </label>
+            <label class="select-control">
+              <span
+                class="control-icon ui-icon icon-star"
+                aria-hidden="true"
+              ></span>
+              <select id="priorityFilter" aria-label="Filter by priority">
+                <option value="all">All Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </label>
+            <label class="select-control">
+              <span
+                class="control-icon ui-icon icon-calendar"
+                aria-hidden="true"
+              ></span>
+              <select id="sortSelect" aria-label="Sort by due date">
+                <option value="due-asc">Due Date Asc</option>
+                <option value="due-desc">Due Date Desc</option>
+              </select>
+            </label>
+            <button class="primary-button" id="addTaskButton" type="button">
+              <span
+                class="button-icon ui-icon icon-task"
+                aria-hidden="true"
+              ></span
+              ><span data-i18n="addTask">Add Task</span>
+            </button>
           </div>
+
+          <div class="table-wrap">
+            <table>
+              <colgroup>
+                <col class="task-check-column" />
+                <col class="task-name-column" />
+                <col class="task-priority-column" />
+                <col class="task-date-column" />
+                <col class="task-status-column" />
+                <col class="task-actions-column" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th aria-label="Completed"></th>
+                  <th data-i18n="taskName">Task Name</th>
+                  <th data-i18n="priority">Priority</th>
+                  <th data-i18n="dueDate">Due Date</th>
+                  <th data-i18n="status">Status</th>
+                  <th data-i18n="actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <span class="empty-icon" aria-hidden="true"
+              ><span class="ui-icon icon-task"></span
+            ></span>
+            <h3 id="emptyStateTitle">No tasks yet</h3>
+            <p id="emptyStateMessage">
+              Create your first task to start planning your day.
+            </p>
+            <button class="primary-button" id="emptyAddButton" type="button">
+              <span
+                class="button-icon ui-icon icon-task"
+                aria-hidden="true"
+              ></span
+              ><span data-i18n="addTask">Add Task</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="task-dialog" id="taskDialog">
+      <form id="taskForm" method="dialog" novalidate>
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2 id="modalTitle">Add New Task</h2>
+            <p id="modalSubtitle">
+              Create a new task and organize your workflow.
+            </p>
+          </div>
+          <button
+            class="modal-close-button"
+            id="closeModalButton"
+            type="button"
+            aria-label="Close modal"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
 
-        <div class="task-controls">
-          <label class="search-field">
-            <span aria-hidden="true">?</span>
-            <input id="taskSearch" type="search" placeholder="Search tasks..." autocomplete="off" data-i18n-placeholder="taskSearchPlaceholder">
+        <input id="taskId" type="hidden" />
+        <label class="form-field">
+          <span data-i18n="taskTitleLabel">Task Title</span>
+          <input
+            id="taskTitle"
+            type="text"
+            maxlength="120"
+            placeholder="Review project brief"
+            aria-describedby="taskTitleError"
+            aria-invalid="false"
+          />
+          <small
+            class="field-error"
+            id="taskTitleError"
+            aria-live="polite"
+          ></small>
+        </label>
+        <label class="form-field">
+          <span data-i18n="category">Category</span>
+          <input
+            id="taskCategory"
+            type="text"
+            required
+            maxlength="60"
+            placeholder="Planning"
+          />
+        </label>
+        <fieldset class="icon-picker-field">
+          <legend data-i18n="taskIcon">Task Icon</legend>
+          <div
+            class="task-icon-picker"
+            id="taskIconPicker"
+            aria-label="Task Icon"
+          ></div>
+        </fieldset>
+        <div class="form-grid">
+          <label class="form-field">
+            <span data-i18n="priority">Priority</span>
+            <select id="taskPriority">
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
           </label>
-          <select id="statusFilter" aria-label="Filter by status">
-            <option value="all">All Status</option>
-            <option value="not-started">Not Started</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
-          <select id="priorityFilter" aria-label="Filter by priority">
-            <option value="all">All Priority</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-          <select id="sortSelect" aria-label="Sort by due date">
-            <option value="due-asc">Due Date Asc</option>
-            <option value="due-desc">Due Date Desc</option>
-          </select>
-          <button class="primary-button" id="addTaskButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
+          <label class="form-field">
+            <span data-i18n="status">Status</span>
+            <select id="taskStatus">
+              <option value="not-started">Not Started</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </label>
         </div>
-
-        <div class="table-wrap">
-          <table>
-            <colgroup>
-              <col class="task-check-column">
-              <col class="task-name-column">
-              <col class="task-priority-column">
-              <col class="task-date-column">
-              <col class="task-status-column">
-              <col class="task-actions-column">
-            </colgroup>
-            <thead>
-              <tr>
-                <th aria-label="Completed"></th>
-                <th data-i18n="taskName">Task Name</th>
-                <th data-i18n="priority">Priority</th>
-                <th data-i18n="dueDate">Due Date</th>
-                <th data-i18n="status">Status</th>
-                <th data-i18n="actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="taskTableBody"></tbody>
-          </table>
-        </div>
-
-        <div class="empty-state" id="emptyState" hidden>
-          <h3 id="emptyStateTitle">No tasks yet</h3>
-          <p id="emptyStateMessage">Create your first task to start planning your day.</p>
-          <button class="primary-button" id="emptyAddButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <dialog class="task-dialog" id="taskDialog">
-    <form id="taskForm" method="dialog" novalidate>
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <h2 id="modalTitle">Add New Task</h2>
-          <p id="modalSubtitle">Create a new task and organize your workflow.</p>
-        </div>
-        <button class="modal-close-button" id="closeModalButton" type="button" aria-label="Close modal">
-          <span aria-hidden="true">x</span>
-        </button>
-      </div>
-
-      <input id="taskId" type="hidden">
-      <label class="form-field">
-        <span data-i18n="taskTitleLabel">Task Title</span>
-        <input id="taskTitle" type="text" maxlength="120" placeholder="Review project brief" aria-describedby="taskTitleError" aria-invalid="false">
-        <small class="field-error" id="taskTitleError" aria-live="polite"></small>
-      </label>
-      <label class="form-field">
-        <span data-i18n="category">Category</span>
-        <input id="taskCategory" type="text" required maxlength="60" placeholder="Planning">
-      </label>
-      <fieldset class="icon-picker-field">
-        <legend data-i18n="taskIcon">Task Icon</legend>
-        <div class="task-icon-picker" id="taskIconPicker" aria-label="Task Icon"></div>
-      </fieldset>
-      <div class="form-grid">
         <label class="form-field">
-          <span data-i18n="priority">Priority</span>
-          <select id="taskPriority">
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
+          <span
+            ><span
+              class="label-icon ui-icon icon-calendar"
+              aria-hidden="true"
+            ></span
+            ><span data-i18n="dueDate">Due Date</span></span
+          >
+          <input id="taskDueDate" type="date" />
         </label>
-        <label class="form-field">
-          <span data-i18n="status">Status</span>
-          <select id="taskStatus">
-            <option value="not-started">Not Started</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
-        </label>
-      </div>
-      <label class="form-field">
-        <span data-i18n="dueDate">Due Date</span>
-        <input id="taskDueDate" type="date">
-      </label>
 
-      <div class="modal-actions">
-        <button class="ghost-button" id="cancelModalButton" type="button" data-i18n="cancel">Cancel</button>
-        <button class="primary-button" id="taskSubmitButton" type="submit">Add Task</button>
-      </div>
-    </form>
-  </dialog>
+        <div class="modal-actions">
+          <button class="ghost-button" id="cancelModalButton" type="button">
+            <span data-i18n="cancel">Cancel</span>
+          </button>
+          <button class="primary-button" id="taskSubmitButton" type="submit">
+            Add Task
+          </button>
+        </div>
+      </form>
+    </dialog>
 
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
