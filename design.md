@@ -401,9 +401,8 @@ Completed
 Formula:
 
 ```js
-completionRate = totalTasks === 0
-  ? 0
-  : Math.round((completedTasks / totalTasks) * 100);
+completionRate =
+  totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
 ```
 
 Status breakdown:
@@ -507,7 +506,7 @@ const sampleTasks = [
     status: "in-progress",
     createdAt: "2026-07-09T10:00:00.000Z",
     updatedAt: "2026-07-09T10:00:00.000Z",
-    completedAt: null
+    completedAt: null,
   },
   {
     id: "sample-2",
@@ -518,7 +517,7 @@ const sampleTasks = [
     status: "in-progress",
     createdAt: "2026-07-09T10:05:00.000Z",
     updatedAt: "2026-07-09T10:05:00.000Z",
-    completedAt: null
+    completedAt: null,
   },
   {
     id: "sample-3",
@@ -529,7 +528,7 @@ const sampleTasks = [
     status: "not-started",
     createdAt: "2026-07-09T10:10:00.000Z",
     updatedAt: "2026-07-09T10:10:00.000Z",
-    completedAt: null
+    completedAt: null,
   },
   {
     id: "sample-4",
@@ -540,7 +539,7 @@ const sampleTasks = [
     status: "not-started",
     createdAt: "2026-07-09T10:15:00.000Z",
     updatedAt: "2026-07-09T10:15:00.000Z",
-    completedAt: null
+    completedAt: null,
   },
   {
     id: "sample-5",
@@ -551,7 +550,7 @@ const sampleTasks = [
     status: "completed",
     createdAt: "2026-07-09T10:20:00.000Z",
     updatedAt: "2026-07-09T10:20:00.000Z",
-    completedAt: "2026-07-09T10:30:00.000Z"
+    completedAt: "2026-07-09T10:30:00.000Z",
   },
   {
     id: "sample-6",
@@ -562,8 +561,8 @@ const sampleTasks = [
     status: "in-progress",
     createdAt: "2026-07-09T10:25:00.000Z",
     updatedAt: "2026-07-09T10:25:00.000Z",
-    completedAt: null
-  }
+    completedAt: null,
+  },
 ];
 ```
 
@@ -605,13 +604,13 @@ Each task should use this structure:
 ### Allowed Priority Values
 
 ```js
-["high", "medium", "low"]
+["high", "medium", "low"];
 ```
 
 ### Allowed Status Values
 
 ```js
-["not-started", "in-progress", "completed"]
+["not-started", "in-progress", "completed"];
 ```
 
 ### ID Generation
@@ -619,13 +618,13 @@ Each task should use this structure:
 Use:
 
 ```js
-crypto.randomUUID()
+crypto.randomUUID();
 ```
 
 Fallback if needed:
 
 ```js
-Date.now().toString()
+Date.now().toString();
 ```
 
 ---
@@ -637,7 +636,7 @@ Use these keys:
 ```js
 const STORAGE_KEYS = {
   tasks: "taskflow.tasks",
-  theme: "taskflow.theme"
+  theme: "taskflow.theme",
 };
 ```
 
@@ -654,13 +653,13 @@ localStorage.setItem("taskflow.tasks", JSON.stringify(tasks));
 Theme should be stored as:
 
 ```js
-"light"
+"light";
 ```
 
 or
 
 ```js
-"dark"
+"dark";
 ```
 
 ---
@@ -898,16 +897,16 @@ Use CSS variables:
 
 ```css
 :root {
-  --background: #F7F8FA;
-  --card: #FFFFFF;
-  --primary: #4F46E5;
-  --secondary: #2563EB;
-  --success: #22C55E;
-  --warning: #F59E0B;
-  --danger: #EF4444;
+  --background: #f7f8fa;
+  --card: #ffffff;
+  --primary: #4f46e5;
+  --secondary: #2563eb;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
   --text: #111827;
-  --muted: #6B7280;
-  --border: #E5E7EB;
+  --muted: #6b7280;
+  --border: #e5e7eb;
 }
 ```
 
@@ -915,16 +914,16 @@ Use CSS variables:
 
 ```css
 [data-theme="dark"] {
-  --background: #0F172A;
+  --background: #0f172a;
   --card: #111827;
-  --primary: #818CF8;
-  --secondary: #60A5FA;
-  --success: #4ADE80;
-  --warning: #FBBF24;
-  --danger: #F87171;
-  --text: #F9FAFB;
-  --muted: #9CA3AF;
-  --border: #1F2937;
+  --primary: #818cf8;
+  --secondary: #60a5fa;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --text: #f9fafb;
+  --muted: #9ca3af;
+  --border: #1f2937;
 }
 ```
 
@@ -1185,3 +1184,31 @@ Future versions may include:
 - Analytics history
 
 These features should not be implemented in version 1 unless requested.
+
+---
+
+## Icon System
+
+TaskFlow uses local SVG icons from `assets/icons/`.
+
+Icons should be visually consistent across the app.
+
+Rules:
+
+- Do not render raw SVG colors directly if they clash with the UI.
+- Prefer CSS mask icons so icon color can be controlled by CSS.
+- Icons should be monochrome inside UI controls.
+- Sidebar icons use muted gray by default and primary color when active.
+- Task icons use a soft primary icon badge.
+- Edit uses primary blue.
+- Delete uses danger red.
+- Completed uses green.
+- In Progress uses blue.
+- Not Started uses purple/gray.
+
+Icon sizes:
+
+- Sidebar: 18px
+- Header toolbar: 18px
+- Task row: 18px to 20px
+- Status card: 20px to 22px

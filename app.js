@@ -1,18 +1,226 @@
 const TASKS_KEY = "taskflow.tasks";
 const THEME_KEY = "taskflow.theme";
+const LANG_KEY = "taskflow.lang";
 const VALID_PRIORITIES = ["high", "medium", "low"];
 const VALID_STATUSES = ["not-started", "in-progress", "completed"];
+const VALID_ICONS = ["task", "code", "book", "clipboard", "file", "folder", "calendar", "user", "check", "star"];
 
-const labels = {
-  priorities: {
-    high: "High",
-    medium: "Medium",
-    low: "Low"
+const iconAssetPaths = {
+  analytics: "assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg",
+  task: "assets/icons/raw/tasks-app-svgrepo-com.svg",
+  code: "assets/icons/raw/com-laptop-code-svgrepo-com.svg",
+  book: "assets/icons/raw/book-closed-svgrepo-com.svg",
+  clipboard: "assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg",
+  file: "assets/icons/raw/file-folder-2-svgrepo-com.svg",
+  folder: "assets/icons/raw/folder-alt-svgrepo-com.svg",
+  calendar: "assets/icons/raw/calendar-svgrepo-com.svg",
+  user: "assets/icons/raw/people-svgrepo-com.svg",
+  check: "assets/icons/raw/check-mark-circle-svgrepo-com.svg",
+  star: "assets/icons/raw/star-fall-svgrepo-com.svg",
+  dashboard: "assets/icons/raw/dashboard-svgrepo-com.svg",
+  settings: "assets/icons/raw/setting-2-svgrepo-com.svg"
+};
+
+const translations = {
+  en: {
+    ui: {
+      documentTitle: "TaskFlow Dashboard",
+      dashboard: "Dashboard",
+      goodMorning: "Good morning",
+      summaryToday: "Here is your task summary for today.",
+      globalSearchPlaceholder: "Search tasks, projects, or tags...",
+      taskSearchPlaceholder: "Search tasks...",
+      newTask: "New Task",
+      addTask: "Add Task",
+      notStarted: "Not Started",
+      inProgress: "In Progress",
+      completed: "Completed",
+      tasksReady: "Tasks ready to begin",
+      tasksMoving: "Tasks moving forward",
+      tasksWrapped: "Tasks wrapped up",
+      weeklyTaskOverview: "Weekly Task Overview",
+      completionRate: "Completion Rate",
+      dailyTasks: "Daily Tasks",
+      exportJson: "Export JSON",
+      importJson: "Import JSON",
+      clearData: "Clear Data",
+      allStatus: "All Status",
+      allPriority: "All Priority",
+      dueDateAsc: "Due Date Asc",
+      dueDateDesc: "Due Date Desc",
+      taskName: "Task Name",
+      priority: "Priority",
+      dueDate: "Due Date",
+      status: "Status",
+      actions: "Actions",
+      edit: "Edit",
+      delete: "Delete",
+      tasks: "Tasks",
+      calendar: "Calendar",
+      analytics: "Analytics",
+      settings: "Settings",
+      localFirst: "Local-first",
+      yourTasksStayHere: "Your tasks stay here",
+      localDataMessage: "TaskFlow stores data in this browser only. Export JSON anytime to keep a backup.",
+      demoUser: "Demo User",
+      overview: "Overview",
+      progress: "Progress",
+      thisWeek: "This Week",
+      thisMonth: "This Month",
+      tasksCompleted: "Tasks Completed",
+      plan: "Plan",
+      selectedDate: "Selected Date",
+      noDueDate: "No Due Date",
+      tasksWithoutDueDate: "tasks without a due date",
+      viewInTasks: "View in Tasks",
+      manage: "Manage",
+      taskTitleLabel: "Task Title",
+      category: "Category",
+      taskIcon: "Task Icon",
+      cancel: "Cancel",
+      saveTask: "Save Task",
+      addNewTask: "Add New Task",
+      addTaskSubtitle: "Create a new task and organize your workflow.",
+      editTaskSubtitle: "Update task details and keep your workflow organized.",
+      saveChanges: "Save Changes",
+      taskNameRequired: "Task name is required.",
+      updateTask: "Update task",
+      editTask: "Edit Task",
+      noTasksYet: "No tasks yet",
+      createFirstTask: "Create your first task to start planning your day.",
+      noMatchingTasks: "No matching tasks found",
+      tryChangingFilters: "Try changing your search, status filter, or priority filter.",
+      noTasksOnDate: "No tasks on this date",
+      selectAnotherDay: "Select another day or add a new task.",
+      noDueDateLabel: "No due date",
+      selectedDateFallback: "Selected date",
+      toggleLanguage: "Toggle language",
+      toggleTheme: "Toggle theme",
+      closeModal: "Close modal",
+      filterByStatus: "Filter by status",
+      filterByPriority: "Filter by priority",
+      sortByDueDate: "Sort by due date",
+      markComplete: "Mark {title} complete",
+      changeStatusFor: "Change status for {title}",
+      editTaskNamed: "Edit {title}",
+      deleteTaskNamed: "Delete {title}",
+      deleteConfirm: "Delete \"{title}\"?\n\nThis action cannot be undone.",
+      clearConfirm: "Clear all local TaskFlow data?\n\nThis action cannot be undone.",
+      selectedTaskCount: "{count} task",
+      selectedTasksCount: "{count} tasks"
+    },
+    priorities: {
+      high: "High",
+      medium: "Medium",
+      low: "Low"
+    },
+    statuses: {
+      "not-started": "Not Started",
+      "in-progress": "In Progress",
+      completed: "Completed"
+    },
+    weekdaysShort: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    locale: "en-US"
   },
-  statuses: {
-    "not-started": "Not Started",
-    "in-progress": "In Progress",
-    completed: "Completed"
+  th: {
+    ui: {
+      documentTitle: "TaskFlow แดชบอร์ด",
+      dashboard: "แดชบอร์ด",
+      goodMorning: "สวัสดี",
+      summaryToday: "นี่คือภาพรวมงานของคุณวันนี้",
+      globalSearchPlaceholder: "ค้นหางาน โปรเจกต์ หรือแท็ก...",
+      taskSearchPlaceholder: "ค้นหางาน...",
+      newTask: "งานใหม่",
+      addTask: "เพิ่มงาน",
+      notStarted: "ยังไม่เริ่ม",
+      inProgress: "กำลังทำ",
+      completed: "เสร็จแล้ว",
+      tasksReady: "งานที่รอเริ่ม",
+      tasksMoving: "งานที่กำลังดำเนินการ",
+      tasksWrapped: "งานที่เสร็จแล้ว",
+      weeklyTaskOverview: "ภาพรวมงานรายสัปดาห์",
+      completionRate: "อัตราการทำงานเสร็จ",
+      dailyTasks: "งานประจำวัน",
+      exportJson: "ส่งออก JSON",
+      importJson: "นำเข้า JSON",
+      clearData: "ล้างข้อมูล",
+      allStatus: "ทุกสถานะ",
+      allPriority: "ทุกความสำคัญ",
+      dueDateAsc: "วันครบกำหนด ↑",
+      dueDateDesc: "วันครบกำหนด ↓",
+      taskName: "ชื่องาน",
+      priority: "ความสำคัญ",
+      dueDate: "วันครบกำหนด",
+      status: "สถานะ",
+      actions: "จัดการ",
+      edit: "แก้ไข",
+      delete: "ลบ",
+      tasks: "งาน",
+      calendar: "ปฏิทิน",
+      analytics: "วิเคราะห์",
+      settings: "ตั้งค่า",
+      localFirst: "เก็บข้อมูลในเครื่อง",
+      yourTasksStayHere: "งานของคุณอยู่ที่นี่",
+      localDataMessage: "TaskFlow เก็บข้อมูลไว้ในเบราว์เซอร์นี้เท่านั้น คุณสามารถส่งออก JSON เพื่อสำรองข้อมูลได้ทุกเมื่อ",
+      demoUser: "ผู้ใช้ตัวอย่าง",
+      overview: "ภาพรวม",
+      progress: "ความคืบหน้า",
+      thisWeek: "สัปดาห์นี้",
+      thisMonth: "เดือนนี้",
+      tasksCompleted: "งานที่เสร็จแล้ว",
+      plan: "วางแผน",
+      selectedDate: "วันที่เลือก",
+      noDueDate: "ไม่มีวันครบกำหนด",
+      tasksWithoutDueDate: "งานที่ยังไม่มีวันครบกำหนด",
+      viewInTasks: "ดูในงาน",
+      manage: "จัดการ",
+      taskTitleLabel: "ชื่องาน",
+      category: "หมวดหมู่",
+      taskIcon: "ไอคอนงาน",
+      cancel: "ยกเลิก",
+      saveTask: "บันทึกงาน",
+      addNewTask: "เพิ่มงานใหม่",
+      addTaskSubtitle: "สร้างงานใหม่และกำหนดรายละเอียดของงาน",
+      editTaskSubtitle: "แก้ไขรายละเอียดงานของคุณ",
+      saveChanges: "บันทึกการแก้ไข",
+      taskNameRequired: "กรุณากรอกชื่องาน",
+      updateTask: "อัปเดตงาน",
+      editTask: "แก้ไขงาน",
+      noTasksYet: "ยังไม่มีงาน",
+      createFirstTask: "สร้างงานแรกเพื่อเริ่มวางแผนวันของคุณ",
+      noMatchingTasks: "ไม่พบงานที่ตรงกัน",
+      tryChangingFilters: "ลองเปลี่ยนคำค้นหา สถานะ หรือตัวกรองความสำคัญ",
+      noTasksOnDate: "ไม่มีงานในวันนี้",
+      selectAnotherDay: "เลือกวันอื่นหรือเพิ่มงานใหม่",
+      noDueDateLabel: "ไม่มีวันครบกำหนด",
+      selectedDateFallback: "วันที่เลือก",
+      toggleLanguage: "สลับภาษา",
+      toggleTheme: "สลับธีม",
+      closeModal: "ปิดหน้าต่าง",
+      filterByStatus: "กรองตามสถานะ",
+      filterByPriority: "กรองตามความสำคัญ",
+      sortByDueDate: "เรียงตามวันครบกำหนด",
+      markComplete: "ทำเครื่องหมายว่า {title} เสร็จแล้ว",
+      changeStatusFor: "เปลี่ยนสถานะของ {title}",
+      editTaskNamed: "แก้ไข {title}",
+      deleteTaskNamed: "ลบ {title}",
+      deleteConfirm: "ลบ \"{title}\"?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้",
+      clearConfirm: "ล้างข้อมูล TaskFlow ทั้งหมดในเครื่องนี้?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้",
+      selectedTaskCount: "{count} งาน",
+      selectedTasksCount: "{count} งาน"
+    },
+    priorities: {
+      high: "สูง",
+      medium: "กลาง",
+      low: "ต่ำ"
+    },
+    statuses: {
+      "not-started": "ยังไม่เริ่ม",
+      "in-progress": "กำลังทำ",
+      completed: "เสร็จแล้ว"
+    },
+    weekdaysShort: ["จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส.", "อา."],
+    locale: "th-TH"
   }
 };
 
@@ -29,13 +237,16 @@ const initialCalendarDate = toDateInputValue(new Date());
 
 const state = {
   tasks: loadTasks(),
+  lang: loadLanguage(),
   searchQuery: "",
   statusFilter: "all",
   priorityFilter: "all",
   sortOrder: "due-asc",
   calendarMonth: initialCalendarDate.slice(0, 7),
   selectedCalendarDate: initialCalendarDate,
-  editingTaskId: null
+  editingTaskId: null,
+  selectedTaskIcon: "task",
+  iconManuallySelected: false
 };
 
 const elements = {
@@ -53,11 +264,14 @@ const elements = {
   taskId: document.querySelector("#taskId"),
   taskTitle: document.querySelector("#taskTitle"),
   taskCategory: document.querySelector("#taskCategory"),
+  taskIconPicker: document.querySelector("#taskIconPicker"),
   taskPriority: document.querySelector("#taskPriority"),
   taskStatus: document.querySelector("#taskStatus"),
   taskDueDate: document.querySelector("#taskDueDate"),
-  modalEyebrow: document.querySelector("#modalEyebrow"),
   modalTitle: document.querySelector("#modalTitle"),
+  modalSubtitle: document.querySelector("#modalSubtitle"),
+  taskTitleError: document.querySelector("#taskTitleError"),
+  taskSubmitButton: document.querySelector("#taskSubmitButton"),
   notStartedCount: document.querySelector("#notStartedCount"),
   inProgressCount: document.querySelector("#inProgressCount"),
   completedCount: document.querySelector("#completedCount"),
@@ -72,6 +286,7 @@ const elements = {
   selectedDayTasks: document.querySelector("#selectedDayTasks"),
   noDueDateCount: document.querySelector("#noDueDateCount"),
   importInput: document.querySelector("#importInput"),
+  languageToggle: document.querySelector("#languageToggle"),
   themeToggle: document.querySelector("#themeToggle")
 };
 
@@ -80,6 +295,7 @@ document.addEventListener("DOMContentLoaded", init);
 function init() {
   applyStoredTheme();
   bindEvents();
+  applyLanguage();
   render();
 }
 
@@ -95,9 +311,14 @@ function bindEvents() {
   document.querySelector("#prevMonthButton").addEventListener("click", () => changeCalendarMonth(-1));
   document.querySelector("#nextMonthButton").addEventListener("click", () => changeCalendarMonth(1));
   document.querySelector("#viewNoDueDateTasks").addEventListener("click", showTasksSection);
+  elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   elements.importInput.addEventListener("change", importTasks);
   elements.taskForm.addEventListener("submit", saveTaskFromForm);
+  elements.taskTitle.addEventListener("input", clearTaskTitleError);
+  elements.taskCategory.addEventListener("input", handleTaskCategoryInput);
+  elements.taskIconPicker.addEventListener("click", handleIconPickerClick);
+  document.addEventListener("error", handleIconImageError, true);
   elements.calendarGrid.addEventListener("click", handleCalendarDateClick);
   elements.selectedDayTasks.addEventListener("click", handleCalendarTaskClick);
 
@@ -130,6 +351,7 @@ function createSeedTask(id, title, category, priority, dueDate, status, complete
     id,
     title,
     category,
+    icon: inferCategoryIconName(category),
     priority,
     dueDate,
     status,
@@ -158,6 +380,117 @@ function loadTasks() {
 
 function persistTasks() {
   localStorage.setItem(TASKS_KEY, JSON.stringify(state.tasks));
+}
+
+function loadLanguage() {
+  const savedLanguage = localStorage.getItem(LANG_KEY);
+  return savedLanguage === "th" ? "th" : "en";
+}
+
+function t(key, replacements = {}) {
+  const dictionary = translations[state.lang]?.ui || translations.en.ui;
+  const fallback = translations.en.ui[key] || key;
+  const template = dictionary[key] || fallback;
+  return Object.entries(replacements).reduce((value, [name, replacement]) => {
+    return value.replaceAll(`{${name}}`, replacement);
+  }, template);
+}
+
+function getPriorityLabel(priority) {
+  return translations[state.lang]?.priorities?.[priority] || translations.en.priorities[priority] || priority;
+}
+
+function getStatusLabel(status) {
+  return translations[state.lang]?.statuses?.[status] || translations.en.statuses[status] || status;
+}
+
+function getLocale() {
+  return translations[state.lang]?.locale || translations.en.locale;
+}
+
+function getWeekdayLabels() {
+  return translations[state.lang]?.weekdaysShort || translations.en.weekdaysShort;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = state.lang;
+  document.title = t("documentTitle");
+  elements.languageToggle.textContent = state.lang.toUpperCase();
+  elements.languageToggle.setAttribute("aria-label", t("toggleLanguage"));
+  elements.themeToggle.setAttribute("aria-label", t("toggleTheme"));
+  elements.taskIconPicker.setAttribute("aria-label", t("taskIcon"));
+  document.querySelector("#closeModalButton").setAttribute("aria-label", t("closeModal"));
+  updateModalCopy();
+  if (elements.taskTitleError.textContent) {
+    elements.taskTitleError.textContent = t("taskNameRequired");
+  }
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.setAttribute("placeholder", t(element.dataset.i18nPlaceholder));
+  });
+
+  document.querySelectorAll(".calendar-weekdays span").forEach((element, index) => {
+    element.textContent = getWeekdayLabels()[index];
+  });
+
+  updateSelectOptionLabels();
+  renderIconPicker();
+}
+
+function updateModalCopy() {
+  const isEditing = Boolean(state.editingTaskId);
+  elements.modalTitle.textContent = isEditing ? t("editTask") : t("addNewTask");
+  elements.modalSubtitle.textContent = isEditing ? t("editTaskSubtitle") : t("addTaskSubtitle");
+  elements.taskSubmitButton.textContent = isEditing ? t("saveChanges") : t("addTask");
+}
+
+function updateSelectOptionLabels() {
+  setSelectOptions(elements.statusFilter, [
+    ["all", t("allStatus")],
+    ["not-started", getStatusLabel("not-started")],
+    ["in-progress", getStatusLabel("in-progress")],
+    ["completed", getStatusLabel("completed")]
+  ]);
+
+  setSelectOptions(elements.priorityFilter, [
+    ["all", t("allPriority")],
+    ["high", getPriorityLabel("high")],
+    ["medium", getPriorityLabel("medium")],
+    ["low", getPriorityLabel("low")]
+  ]);
+
+  setSelectOptions(elements.sortSelect, [
+    ["due-asc", t("dueDateAsc")],
+    ["due-desc", t("dueDateDesc")]
+  ]);
+
+  setSelectOptions(elements.taskPriority, [
+    ["high", getPriorityLabel("high")],
+    ["medium", getPriorityLabel("medium")],
+    ["low", getPriorityLabel("low")]
+  ]);
+
+  setSelectOptions(elements.taskStatus, [
+    ["not-started", getStatusLabel("not-started")],
+    ["in-progress", getStatusLabel("in-progress")],
+    ["completed", getStatusLabel("completed")]
+  ]);
+
+  elements.statusFilter.setAttribute("aria-label", t("filterByStatus"));
+  elements.priorityFilter.setAttribute("aria-label", t("filterByPriority"));
+  elements.sortSelect.setAttribute("aria-label", t("sortByDueDate"));
+}
+
+function setSelectOptions(select, options) {
+  const currentValue = select.value;
+  select.innerHTML = options.map(([value, label]) => {
+    return `<option value="${value}">${escapeHtml(label)}</option>`;
+  }).join("");
+  select.value = currentValue;
 }
 
 function render() {
@@ -189,7 +522,7 @@ function renderSummary() {
     const percent = total === 0 ? 0 : Math.round((count / total) * 100);
     return `
       <div class="breakdown-row breakdown-${status}">
-        <span><i aria-hidden="true"></i>${labels.statuses[status]}</span>
+        <span><i aria-hidden="true"></i>${getStatusLabel(status)}</span>
         <strong><b>${percent}%</b> <em>(${count})</em></strong>
       </div>
     `;
@@ -208,7 +541,7 @@ function renderWeeklyChart() {
     const value = counts[index];
     const height = value === 0 ? 0 : Math.max(7, Math.round((value / topValue) * 100));
     return `
-      <div class="bar-item" title="${value} completed on ${day.label}">
+      <div class="bar-item" title="${value} ${t("tasksCompleted").toLowerCase()}">
         <strong class="bar-value">${value}</strong>
         <div class="bar-track">
           <div class="bar${value === 0 ? " empty" : ""}" style="height: ${height}%"></div>
@@ -252,20 +585,22 @@ function renderCalendar() {
   const selectedTasks = getTasksForDate(state.selectedCalendarDate).sort(sortCalendarTasks);
   const noDueDateTasks = state.tasks.filter((task) => !task.dueDate);
 
-  elements.calendarMonthTitle.textContent = new Intl.DateTimeFormat(undefined, {
+  elements.calendarMonthTitle.textContent = new Intl.DateTimeFormat(getLocale(), {
     month: "long",
     year: "numeric"
   }).format(monthDate);
   elements.calendarGrid.innerHTML = getCalendarMonthCells(monthDate).map((cell) => renderCalendarDayCell(cell, today)).join("");
   elements.selectedDateTitle.textContent = formatLongDate(state.selectedCalendarDate);
-  elements.selectedDateCount.textContent = `${selectedTasks.length} task${selectedTasks.length === 1 ? "" : "s"}`;
+  elements.selectedDateCount.textContent = selectedTasks.length === 1
+    ? t("selectedTaskCount", { count: selectedTasks.length })
+    : t("selectedTasksCount", { count: selectedTasks.length });
   elements.noDueDateCount.textContent = noDueDateTasks.length;
   elements.selectedDayTasks.innerHTML = selectedTasks.length
     ? selectedTasks.map(renderSelectedDayTaskCard).join("")
     : `
       <div class="calendar-empty">
-        <span>No tasks on this date</span>
-        <small>Select another day or add a new task.</small>
+        <span>${t("noTasksOnDate")}</span>
+        <small>${t("selectAnotherDay")}</small>
       </div>
     `;
 }
@@ -303,12 +638,12 @@ function renderCalendarDayCell(cell, today) {
 
 function renderSelectedDayTaskCard(task) {
   return `
-    <button class="calendar-task-card" type="button" data-calendar-edit="${task.id}" aria-label="Edit ${escapeHtml(task.title)}">
+    <button class="calendar-task-card" type="button" data-calendar-edit="${task.id}" aria-label="${escapeHtml(t("editTaskNamed", { title: task.title }))}">
       <span class="calendar-task-title">${escapeHtml(task.title)}</span>
       <span class="calendar-task-category">${escapeHtml(task.category)}</span>
       <span class="calendar-task-topline">
-        <span class="badge priority-${task.priority}">${labels.priorities[task.priority]}</span>
-        <span class="badge status-${task.status}">${labels.statuses[task.status]}</span>
+        <span class="badge priority-${task.priority}">${getPriorityLabel(task.priority)}</span>
+        <span class="badge status-${task.status}">${getStatusLabel(task.status)}</span>
       </span>
     </button>
   `;
@@ -398,49 +733,125 @@ function renderEmptyState(visibleTaskCount) {
 
   elements.emptyState.hidden = false;
   if (state.tasks.length === 0) {
-    elements.emptyStateTitle.textContent = "No tasks yet";
-    elements.emptyStateMessage.textContent = "Create your first task to start planning your day.";
+    elements.emptyStateTitle.textContent = t("noTasksYet");
+    elements.emptyStateMessage.textContent = t("createFirstTask");
     return;
   }
 
-  elements.emptyStateTitle.textContent = "No matching tasks found";
-  elements.emptyStateMessage.textContent = "Try changing your search, status filter, or priority filter.";
+  elements.emptyStateTitle.textContent = t("noMatchingTasks");
+  elements.emptyStateMessage.textContent = t("tryChangingFilters");
+}
+
+function inferCategoryIconName(category) {
+  const normalizedCategory = String(category || "").trim().toLowerCase();
+  const iconNameByCategory = {
+    coding: "code",
+    "web app": "code",
+    development: "code",
+    learning: "book",
+    study: "book",
+    planning: "clipboard",
+    documentation: "file",
+    personal: "user",
+    admin: "folder",
+    meeting: "calendar",
+    productivity: "check"
+  };
+
+  return iconNameByCategory[normalizedCategory] || "task";
+}
+
+function normalizeIconName(icon, category = "") {
+  const normalizedIcon = String(icon || "").trim().toLowerCase();
+  return VALID_ICONS.includes(normalizedIcon) ? normalizedIcon : inferCategoryIconName(category);
+}
+
+function getTaskIconName(task) {
+  return normalizeIconName(task?.icon, task?.category);
+}
+
+function getIconPath(iconName) {
+  const safeIconName = VALID_ICONS.includes(iconName) ? iconName : "task";
+  return iconAssetPaths[safeIconName] || iconAssetPaths.task;
+}
+
+function getIconImage(iconName, className) {
+  return `<img class="${className}" src="${escapeHtml(getIconPath(iconName))}" alt="" aria-hidden="true" loading="lazy">`;
+}
+
+function renderIconPicker() {
+  elements.taskIconPicker.innerHTML = VALID_ICONS.map((iconName) => {
+    const isSelected = state.selectedTaskIcon === iconName;
+    return `
+      <button class="icon-option${isSelected ? " active" : ""}" type="button" data-icon-option="${iconName}" aria-label="${escapeHtml(t("taskIcon"))}: ${iconName}" aria-pressed="${isSelected}">
+        ${getIconImage(iconName, "icon-picker-img")}
+      </button>
+    `;
+  }).join("");
+}
+
+function setSelectedTaskIcon(iconName, manuallySelected = false) {
+  state.selectedTaskIcon = normalizeIconName(iconName);
+  state.iconManuallySelected = manuallySelected;
+  renderIconPicker();
+}
+
+function handleIconPickerClick(event) {
+  const button = event.target instanceof Element
+    ? event.target.closest("[data-icon-option]")
+    : null;
+  if (!button) return;
+  setSelectedTaskIcon(button.dataset.iconOption, true);
+}
+
+function handleTaskCategoryInput() {
+  if (state.iconManuallySelected) return;
+  setSelectedTaskIcon(inferCategoryIconName(elements.taskCategory.value));
+}
+
+function handleIconImageError(event) {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement)) return;
+  if (!image.classList.contains("task-icon-img") && !image.classList.contains("icon-picker-img")) return;
+  if (image.dataset.fallbackApplied === "true") return;
+  image.dataset.fallbackApplied = "true";
+  image.src = iconAssetPaths.task;
 }
 
 function renderTaskRow(task) {
   const isCompleted = task.status === "completed";
   return `
     <tr>
-      <td data-label="Done">
-        <input type="checkbox" data-complete-toggle="${task.id}" ${isCompleted ? "checked" : ""} aria-label="Mark ${escapeHtml(task.title)} complete">
+      <td data-label="${t("completed")}">
+        <input type="checkbox" data-complete-toggle="${task.id}" ${isCompleted ? "checked" : ""} aria-label="${escapeHtml(t("markComplete", { title: task.title }))}">
       </td>
-      <td data-label="Task">
+      <td data-label="${t("tasks")}">
         <div class="task-name">
-          <span class="task-icon" aria-hidden="true">${task.category.slice(0, 1).toUpperCase()}</span>
+          <span class="task-icon" aria-hidden="true">${getIconImage(getTaskIconName(task), "task-icon-img")}</span>
           <div>
             <span class="task-title">${escapeHtml(task.title)}</span>
             <span class="task-category">${escapeHtml(task.category)}</span>
           </div>
         </div>
       </td>
-      <td data-label="Priority">
-        <span class="badge priority-${task.priority}">${labels.priorities[task.priority]}</span>
+      <td data-label="${t("priority")}">
+        <span class="badge priority-${task.priority}">${getPriorityLabel(task.priority)}</span>
       </td>
-      <td data-label="Due Date">${formatDate(task.dueDate)}</td>
-      <td data-label="Status">
-        <select class="status-select status-select-${task.status}" data-status-select="${task.id}" aria-label="Change status for ${escapeHtml(task.title)}">
-          ${VALID_STATUSES.map((status) => `<option value="${status}" ${task.status === status ? "selected" : ""}>${labels.statuses[status]}</option>`).join("")}
+      <td data-label="${t("dueDate")}">${formatDate(task.dueDate)}</td>
+      <td data-label="${t("status")}">
+        <select class="status-select status-select-${task.status}" data-status-select="${task.id}" aria-label="${escapeHtml(t("changeStatusFor", { title: task.title }))}">
+          ${VALID_STATUSES.map((status) => `<option value="${status}" ${task.status === status ? "selected" : ""}>${getStatusLabel(status)}</option>`).join("")}
         </select>
       </td>
-      <td data-label="Actions">
+      <td data-label="${t("actions")}">
         <div class="row-actions">
-          <button class="action-button edit-action" type="button" data-action="edit" data-id="${task.id}" aria-label="Edit ${escapeHtml(task.title)}">
+          <button class="action-button edit-action" type="button" data-action="edit" data-id="${task.id}" aria-label="${escapeHtml(t("editTaskNamed", { title: task.title }))}" title="${t("edit")}">
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="M12 20h9"></path>
               <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
             </svg>
           </button>
-          <button class="action-button delete-action" type="button" data-action="delete" data-id="${task.id}" aria-label="Delete ${escapeHtml(task.title)}">
+          <button class="action-button delete-action" type="button" data-action="delete" data-id="${task.id}" aria-label="${escapeHtml(t("deleteTaskNamed", { title: task.title }))}" title="${t("delete")}">
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="M3 6h18"></path>
               <path d="M8 6V4h8v2"></path>
@@ -491,12 +902,13 @@ function syncSearch(event) {
 
 function openAddModal() {
   state.editingTaskId = null;
-  elements.modalEyebrow.textContent = "New task";
-  elements.modalTitle.textContent = "Add Task";
+  updateModalCopy();
+  clearTaskTitleError();
   elements.taskForm.reset();
   elements.taskId.value = "";
   elements.taskPriority.value = "medium";
   elements.taskStatus.value = "not-started";
+  setSelectedTaskIcon(inferCategoryIconName(elements.taskCategory.value));
   openModal();
 }
 
@@ -505,14 +917,15 @@ function openEditModal(taskId) {
   if (!task) return;
 
   state.editingTaskId = task.id;
-  elements.modalEyebrow.textContent = "Update task";
-  elements.modalTitle.textContent = "Edit Task";
+  updateModalCopy();
+  clearTaskTitleError();
   elements.taskId.value = task.id;
   elements.taskTitle.value = task.title;
   elements.taskCategory.value = task.category;
   elements.taskPriority.value = task.priority;
   elements.taskStatus.value = task.status;
   elements.taskDueDate.value = task.dueDate || "";
+  setSelectedTaskIcon(getTaskIconName(task), Boolean(task.icon && VALID_ICONS.includes(String(task.icon).toLowerCase())));
   openModal();
 }
 
@@ -526,11 +939,30 @@ function openModal() {
 }
 
 function closeModal() {
+  clearTaskTitleError();
   elements.taskDialog.close();
+}
+
+function showTaskTitleError() {
+  elements.taskTitle.setAttribute("aria-invalid", "true");
+  elements.taskTitleError.textContent = t("taskNameRequired");
+}
+
+function clearTaskTitleError() {
+  elements.taskTitle.setAttribute("aria-invalid", "false");
+  elements.taskTitleError.textContent = "";
 }
 
 function saveTaskFromForm(event) {
   event.preventDefault();
+  const title = elements.taskTitle.value.trim();
+  if (!title) {
+    showTaskTitleError();
+    elements.taskTitle.focus();
+    return;
+  }
+  if (!elements.taskForm.reportValidity()) return;
+
   const now = new Date().toISOString();
   const status = elements.taskStatus.value;
   const existingTask = state.editingTaskId ? findTask(state.editingTaskId) : null;
@@ -541,8 +973,9 @@ function saveTaskFromForm(event) {
 
   const taskData = {
     id: existingTask?.id || getNextId(),
-    title: elements.taskTitle.value.trim(),
+    title,
     category: elements.taskCategory.value.trim(),
+    icon: normalizeIconName(state.selectedTaskIcon, elements.taskCategory.value),
     priority: elements.taskPriority.value,
     dueDate: elements.taskDueDate.value,
     status,
@@ -574,7 +1007,7 @@ function handleTaskAction(event) {
 
   if (action === "delete") {
     const task = findTask(id);
-    if (task && window.confirm(`Delete "${task.title}"?\n\nThis action cannot be undone.`)) {
+    if (task && window.confirm(t("deleteConfirm", { title: task.title }))) {
       state.tasks = state.tasks.filter((item) => item.id !== id);
       persistAndRender();
     }
@@ -674,6 +1107,7 @@ function normalizeImportedTask(task) {
     id: Number.isFinite(Number(task.id)) ? Number(task.id) : getNextId(),
     title,
     category,
+    icon: normalizeIconName(task.icon, category),
     priority,
     dueDate,
     status,
@@ -684,9 +1118,16 @@ function normalizeImportedTask(task) {
 }
 
 function clearAllData() {
-  if (!window.confirm("Clear all local TaskFlow data?\n\nThis action cannot be undone.")) return;
+  if (!window.confirm(t("clearConfirm"))) return;
   state.tasks = [];
   persistAndRender();
+}
+
+function toggleLanguage() {
+  state.lang = state.lang === "en" ? "th" : "en";
+  localStorage.setItem(LANG_KEY, state.lang);
+  applyLanguage();
+  render();
 }
 
 function toggleTheme() {
@@ -721,7 +1162,7 @@ function getCurrentWeekDays() {
   monday.setDate(today.getDate() - day + 1);
   monday.setHours(0, 0, 0, 0);
 
-  return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label, index) => {
+  return getWeekdayLabels().map((label, index) => {
     const date = new Date(monday);
     date.setDate(monday.getDate() + index);
     return {
@@ -745,10 +1186,10 @@ function getNextId() {
 }
 
 function formatDate(value) {
-  if (!value) return "No due date";
+  if (!value) return t("noDueDateLabel");
   const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return "No due date";
-  return new Intl.DateTimeFormat(undefined, {
+  if (Number.isNaN(date.getTime())) return t("noDueDateLabel");
+  return new Intl.DateTimeFormat(getLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric"
@@ -757,8 +1198,8 @@ function formatDate(value) {
 
 function formatLongDate(value) {
   const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return "Selected date";
-  return new Intl.DateTimeFormat(undefined, {
+  if (Number.isNaN(date.getTime())) return t("selectedDateFallback");
+  return new Intl.DateTimeFormat(getLocale(), {
     weekday: "long",
     month: "long",
     day: "numeric",

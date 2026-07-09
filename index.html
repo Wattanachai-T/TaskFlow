@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskFlow Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,23 +18,23 @@
       </div>
 
       <nav class="nav-list">
-        <a class="nav-item active" href="#dashboard" aria-current="page"><span>#</span> Dashboard</a>
-        <a class="nav-item" href="#tasks"><span>+</span> Tasks</a>
-        <a class="nav-item" href="#calendar"><span>[]</span> Calendar</a>
-        <a class="nav-item" href="#analytics"><span>%</span> Analytics</a>
-        <a class="nav-item" href="#settings"><span>*</span> Settings</a>
+        <a class="nav-item active" href="#dashboard" aria-current="page"><span>#</span> <b data-i18n="dashboard">Dashboard</b></a>
+        <a class="nav-item" href="#tasks"><span>+</span> <b data-i18n="tasks">Tasks</b></a>
+        <a class="nav-item" href="#calendar"><span>[]</span> <b data-i18n="calendar">Calendar</b></a>
+        <a class="nav-item" href="#analytics"><span>%</span> <b data-i18n="analytics">Analytics</b></a>
+        <a class="nav-item" href="#settings"><span>*</span> <b data-i18n="settings">Settings</b></a>
       </nav>
 
       <section class="local-card" aria-label="Local data notice">
-        <p class="eyebrow">Local-first</p>
-        <h2>Your tasks stay here</h2>
-        <p>TaskFlow stores data in this browser only. Export JSON anytime to keep a backup.</p>
+        <p class="eyebrow" data-i18n="localFirst">Local-first</p>
+        <h2 data-i18n="yourTasksStayHere">Your tasks stay here</h2>
+        <p data-i18n="localDataMessage">TaskFlow stores data in this browser only. Export JSON anytime to keep a backup.</p>
       </section>
 
       <section class="profile-card" aria-label="Demo profile">
         <div class="avatar" aria-hidden="true">DU</div>
         <div>
-          <strong>Demo User</strong>
+          <strong data-i18n="demoUser">Demo User</strong>
           <span>demo@taskflow.app</span>
         </div>
       </section>
@@ -40,20 +43,20 @@
     <main class="main-content" id="dashboard">
       <header class="top-header">
         <div>
-          <p class="eyebrow">Good morning</p>
-          <h1>Dashboard</h1>
-          <p class="subtle">Here is your task summary for today.</p>
+          <p class="eyebrow" data-i18n="goodMorning">Good morning</p>
+          <h1 data-i18n="dashboard">Dashboard</h1>
+          <p class="subtle" data-i18n="summaryToday">Here is your task summary for today.</p>
         </div>
 
-        <div class="header-actions">
+        <div class="header-actions" aria-label="Header tools">
           <label class="search-field header-search">
             <span aria-hidden="true">?</span>
-            <input id="globalSearch" type="search" placeholder="Search tasks, projects, or tags..." autocomplete="off">
+            <input id="globalSearch" type="search" placeholder="Search tasks, projects, or tags..." autocomplete="off" data-i18n-placeholder="globalSearchPlaceholder">
             <kbd>Ctrl K</kbd>
           </label>
-          <button class="icon-button" type="button" aria-label="Notifications">!</button>
-          <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme">D</button>
-          <button class="primary-button" id="newTaskButton" type="button">+ New Task</button>
+          <button class="toolbar-button language-button" id="languageToggle" type="button" aria-label="Toggle language">EN</button>
+          <button class="toolbar-button" id="themeToggle" type="button" aria-label="Toggle theme">D</button>
+          <button class="primary-button header-primary-button" id="newTaskButton" type="button">+ <span data-i18n="newTask">New Task</span></button>
         </div>
       </header>
 
@@ -63,10 +66,10 @@
             <div>
               <div class="card-heading">
                 <span class="icon-chip purple" aria-hidden="true">NS</span>
-                <span>Not Started</span>
+                <span data-i18n="notStarted">Not Started</span>
               </div>
               <strong id="notStartedCount">0</strong>
-              <p>Tasks ready to begin</p>
+              <p data-i18n="tasksReady">Tasks ready to begin</p>
             </div>
             <div class="sparkline sparkline-purple" aria-hidden="true">
               <svg viewBox="0 0 132 58" focusable="false">
@@ -83,10 +86,10 @@
             <div>
               <div class="card-heading">
                 <span class="icon-chip blue" aria-hidden="true">IP</span>
-                <span>In Progress</span>
+                <span data-i18n="inProgress">In Progress</span>
               </div>
               <strong id="inProgressCount">0</strong>
-              <p>Tasks moving forward</p>
+              <p data-i18n="tasksMoving">Tasks moving forward</p>
             </div>
             <div class="sparkline sparkline-blue" aria-hidden="true">
               <svg viewBox="0 0 132 58" focusable="false">
@@ -103,10 +106,10 @@
             <div>
               <div class="card-heading">
                 <span class="icon-chip green" aria-hidden="true">OK</span>
-                <span>Completed</span>
+                <span data-i18n="completed">Completed</span>
               </div>
               <strong id="completedCount">0</strong>
-              <p>Tasks wrapped up</p>
+              <p data-i18n="tasksWrapped">Tasks wrapped up</p>
             </div>
             <div class="sparkline sparkline-green" aria-hidden="true">
               <svg viewBox="0 0 132 58" focusable="false">
@@ -123,28 +126,28 @@
         <article class="card chart-card">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">Overview</p>
-              <h2>Weekly Task Overview</h2>
+              <p class="eyebrow" data-i18n="overview">Overview</p>
+              <h2 data-i18n="weeklyTaskOverview">Weekly Task Overview</h2>
             </div>
-            <span class="select-like">This Week</span>
+            <span class="select-like" data-i18n="thisWeek">This Week</span>
           </div>
           <div class="bar-chart" id="weeklyChart" aria-label="Weekly completed task chart"></div>
-          <div class="chart-legend"><span></span> Tasks Completed</div>
+          <div class="chart-legend"><span></span> <b data-i18n="tasksCompleted">Tasks Completed</b></div>
         </article>
 
         <article class="card completion-card">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">Progress</p>
-              <h2>Completion Rate</h2>
+              <p class="eyebrow" data-i18n="progress">Progress</p>
+              <h2 data-i18n="completionRate">Completion Rate</h2>
             </div>
-            <span class="select-like">This Month</span>
+            <span class="select-like" data-i18n="thisMonth">This Month</span>
           </div>
           <div class="completion-body">
             <div class="donut-wrap">
               <div class="donut" id="completionDonut">
                 <span id="completionRate">0%</span>
-                <small>Completed</small>
+                <small data-i18n="completed">Completed</small>
               </div>
             </div>
             <div class="breakdown" id="completionBreakdown"></div>
@@ -155,10 +158,10 @@
       <section class="card calendar-section" id="calendar" aria-label="Calendar task view">
         <div class="section-heading calendar-heading">
           <div>
-            <p class="eyebrow">Plan</p>
-            <h2>Calendar</h2>
+            <p class="eyebrow" data-i18n="plan">Plan</p>
+            <h2 data-i18n="calendar">Calendar</h2>
           </div>
-          <button class="primary-button" id="calendarAddButton" type="button">+ Add Task</button>
+          <button class="primary-button" id="calendarAddButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
         </div>
 
         <div class="calendar-shell">
@@ -183,7 +186,7 @@
           <aside class="selected-day-panel" aria-label="Selected day tasks">
             <div class="selected-day-header">
               <div>
-                <p class="eyebrow">Selected Date</p>
+                <p class="eyebrow" data-i18n="selectedDate">Selected Date</p>
                 <h3 id="selectedDateTitle">Today</h3>
               </div>
               <span id="selectedDateCount">0 tasks</span>
@@ -191,10 +194,10 @@
             <div class="selected-day-list" id="selectedDayTasks"></div>
             <div class="no-due-summary">
               <div>
-                <h3>No Due Date</h3>
-                <p><strong id="noDueDateCount">0</strong> tasks without a due date</p>
+                <h3 data-i18n="noDueDate">No Due Date</h3>
+                <p><strong id="noDueDateCount">0</strong> <span data-i18n="tasksWithoutDueDate">tasks without a due date</span></p>
               </div>
-              <button class="ghost-button" id="viewNoDueDateTasks" type="button">View in Tasks</button>
+              <button class="ghost-button" id="viewNoDueDateTasks" type="button" data-i18n="viewInTasks">View in Tasks</button>
             </div>
           </aside>
         </div>
@@ -203,23 +206,23 @@
       <section class="card tasks-section" id="tasks">
         <div class="section-heading task-section-heading">
           <div>
-            <p class="eyebrow">Manage</p>
-            <h2>Daily Tasks</h2>
+            <p class="eyebrow" data-i18n="manage">Manage</p>
+            <h2 data-i18n="dailyTasks">Daily Tasks</h2>
           </div>
           <div class="data-actions">
-            <button class="ghost-button" id="exportButton" type="button">Export JSON</button>
+            <button class="ghost-button" id="exportButton" type="button" data-i18n="exportJson">Export JSON</button>
             <label class="ghost-button file-button">
-              Import JSON
+              <span data-i18n="importJson">Import JSON</span>
               <input id="importInput" type="file" accept="application/json,.json">
             </label>
-            <button class="danger-button" id="clearButton" type="button">Clear Data</button>
+            <button class="danger-button" id="clearButton" type="button" data-i18n="clearData">Clear Data</button>
           </div>
         </div>
 
         <div class="task-controls">
           <label class="search-field">
             <span aria-hidden="true">?</span>
-            <input id="taskSearch" type="search" placeholder="Search tasks..." autocomplete="off">
+            <input id="taskSearch" type="search" placeholder="Search tasks..." autocomplete="off" data-i18n-placeholder="taskSearchPlaceholder">
           </label>
           <select id="statusFilter" aria-label="Filter by status">
             <option value="all">All Status</option>
@@ -237,19 +240,27 @@
             <option value="due-asc">Due Date Asc</option>
             <option value="due-desc">Due Date Desc</option>
           </select>
-          <button class="primary-button" id="addTaskButton" type="button">+ Add Task</button>
+          <button class="primary-button" id="addTaskButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
         </div>
 
         <div class="table-wrap">
           <table>
+            <colgroup>
+              <col class="task-check-column">
+              <col class="task-name-column">
+              <col class="task-priority-column">
+              <col class="task-date-column">
+              <col class="task-status-column">
+              <col class="task-actions-column">
+            </colgroup>
             <thead>
               <tr>
                 <th aria-label="Completed"></th>
-                <th>Task Name</th>
-                <th>Priority</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th data-i18n="taskName">Task Name</th>
+                <th data-i18n="priority">Priority</th>
+                <th data-i18n="dueDate">Due Date</th>
+                <th data-i18n="status">Status</th>
+                <th data-i18n="actions">Actions</th>
               </tr>
             </thead>
             <tbody id="taskTableBody"></tbody>
@@ -259,42 +270,49 @@
         <div class="empty-state" id="emptyState" hidden>
           <h3 id="emptyStateTitle">No tasks yet</h3>
           <p id="emptyStateMessage">Create your first task to start planning your day.</p>
-          <button class="primary-button" id="emptyAddButton" type="button">+ Add Task</button>
+          <button class="primary-button" id="emptyAddButton" type="button">+ <span data-i18n="addTask">Add Task</span></button>
         </div>
       </section>
     </main>
   </div>
 
   <dialog class="task-dialog" id="taskDialog">
-    <form id="taskForm" method="dialog">
+    <form id="taskForm" method="dialog" novalidate>
       <div class="modal-header">
-        <div>
-          <p class="eyebrow" id="modalEyebrow">New task</p>
-          <h2 id="modalTitle">Add Task</h2>
+        <div class="modal-title-group">
+          <h2 id="modalTitle">Add New Task</h2>
+          <p id="modalSubtitle">Create a new task and organize your workflow.</p>
         </div>
-        <button class="icon-button" id="closeModalButton" type="button" aria-label="Close modal">x</button>
+        <button class="modal-close-button" id="closeModalButton" type="button" aria-label="Close modal">
+          <span aria-hidden="true">x</span>
+        </button>
       </div>
 
       <input id="taskId" type="hidden">
-      <label>
-        Task Title
-        <input id="taskTitle" type="text" required maxlength="120" placeholder="Review project brief">
+      <label class="form-field">
+        <span data-i18n="taskTitleLabel">Task Title</span>
+        <input id="taskTitle" type="text" maxlength="120" placeholder="Review project brief" aria-describedby="taskTitleError" aria-invalid="false">
+        <small class="field-error" id="taskTitleError" aria-live="polite"></small>
       </label>
-      <label>
-        Category
+      <label class="form-field">
+        <span data-i18n="category">Category</span>
         <input id="taskCategory" type="text" required maxlength="60" placeholder="Planning">
       </label>
+      <fieldset class="icon-picker-field">
+        <legend data-i18n="taskIcon">Task Icon</legend>
+        <div class="task-icon-picker" id="taskIconPicker" aria-label="Task Icon"></div>
+      </fieldset>
       <div class="form-grid">
-        <label>
-          Priority
+        <label class="form-field">
+          <span data-i18n="priority">Priority</span>
           <select id="taskPriority">
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
         </label>
-        <label>
-          Status
+        <label class="form-field">
+          <span data-i18n="status">Status</span>
           <select id="taskStatus">
             <option value="not-started">Not Started</option>
             <option value="in-progress">In Progress</option>
@@ -302,14 +320,14 @@
           </select>
         </label>
       </div>
-      <label>
-        Due Date
+      <label class="form-field">
+        <span data-i18n="dueDate">Due Date</span>
         <input id="taskDueDate" type="date">
       </label>
 
       <div class="modal-actions">
-        <button class="ghost-button" id="cancelModalButton" type="button">Cancel</button>
-        <button class="primary-button" type="submit">Save Task</button>
+        <button class="ghost-button" id="cancelModalButton" type="button" data-i18n="cancel">Cancel</button>
+        <button class="primary-button" id="taskSubmitButton" type="submit">Add Task</button>
       </div>
     </form>
   </dialog>
