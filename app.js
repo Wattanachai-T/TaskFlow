@@ -1,9 +1,35 @@
 const TASKS_KEY = "taskflow.tasks";
 const THEME_KEY = "taskflow.theme";
 const LANG_KEY = "taskflow.lang";
+const QUOTE_INDEX_KEY = "taskflow.lastQuoteIndex";
 const VALID_PRIORITIES = ["high", "medium", "low"];
 const VALID_STATUSES = ["not-started", "in-progress", "completed"];
 const VALID_ICONS = ["task", "code", "book", "clipboard", "file", "folder", "calendar", "user", "check", "star"];
+const dashboardQuotes = [
+  "การเปรียบเทียบกับผู้อื่นแล้วพบว่าเราด้อยกว่านั้น ไม่ใช่เรื่องที่น่าละอายเลยแม้แต่น้อย แต่หากเปรียบเทียบตัวเราในปีที่แล้วกับตัวเราในปีนี้ แล้วพบว่าปีนี้เราด้อยลงกว่าเดิม นั่นต่างหากคือสิ่งที่น่าละอายอย่างยิ่ง",
+  "ไม่ว่าใครก็เหมือนกัน คนที่รู้จักทบทวนตัวเองย่อมจะประสบความสำเร็จอย่างแน่นอน เพราะการทบทวนตัวเองอย่างถูกต้องและแท้จริง จะทำให้เรารู้ชัดเจนว่าควรทำอะไรต่อไป และอะไรที่ไม่ควรทำ นั่นแหละคือวิธีที่คนเราจะเติบโตขึ้นในฐานะมนุษย์",
+  "ไม่ว่าจะเสียใจเพียงใด อดีตก็ไม่มีวันเปลี่ยนแปลง และไม่ว่าจะกังวลแค่ไหน อนาคตก็ไม่ใช่สิ่งที่เราจะควบคุมได้ สิ่งที่ควรทำคือการทำปัจจุบันในขณะนี้ให้ดีที่สุด",
+  "หากไม่รู้ ก็คือการถามผู้อื่น",
+  "ที่เรียกว่าความล้มเหลว เพราะคุณล้มเลิกไปเสียก่อน หากคุณทำต่อไปจนถึงจุดที่สำเร็จ สิ่งนั้นก็จะกลายเป็นความสำเร็จ",
+  "มนุษย์เราไม่มีคำว่าทางตันอย่างแน่นอน คำว่าทางตันนั้น เป็นเพียงแค่การที่คุณคิดไปเองว่าตัวเองถึงทางตันแล้วเท่านั้น",
+  "หากล้มลงร้อยครั้ง ก็จงลุกขึ้นมาให้ได้ร้อยครั้ง อย่าพูดว่าหมดสิ้นหนทางแล้ว เพราะหนทางแก้ไขย่อมมีอยู่เสมอ",
+  "มองโลกในแง่ดีก็ดี มองโลกในแง่ร้ายก็ดี เพราะท่ามกลางความมองโลกในแง่ร้ายก็มีหนทาง และท่ามกลางความมองโลกในแง่ดีก็มีหนทางเช่นกัน",
+  "อยากเป็นคนประเภทที่เมื่อเผชิญกับความยากลำบากแล้วกลับรู้สึกตื่นเต้น พร้อมที่จะเผชิญหน้าท้าทายอย่างกล้าหาญเพื่อฟันฝ่าอุปสรรคเหล่านั้นไปให้ได้",
+  "การตั้งปณิธานนั้นไม่เกี่ยวกับว่าจะแก่หรือหนุ่ม และที่ใดที่มีปณิธาน ที่นั่นย่อมมีหนทางเปิดออกเสมอ ไม่ว่าผู้นั้นจะแก่หรือหนุ่มก็ตาม"
+];
+
+const taskIconAssetPaths = {
+  task: "assets/icons/raw/task-icon/list.svg",
+  code: "assets/icons/raw/task-icon/code-window.svg",
+  book: "assets/icons/raw/task-icon/book-bookmark.svg",
+  clipboard: "assets/icons/raw/task-icon/brand-strategy.svg",
+  file: "assets/icons/raw/task-icon/envelope.svg",
+  folder: "assets/icons/raw/task-icon/computer.svg",
+  calendar: "assets/icons/raw/task-icon/ticket.svg",
+  user: "assets/icons/raw/task-icon/graduation-cap.svg",
+  check: "assets/icons/raw/task-icon/coins.svg",
+  star: "assets/icons/raw/task-icon/palette.svg"
+};
 
 const iconAssetPaths = {
   analytics: "assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg",
@@ -119,6 +145,8 @@ const translations = {
       selectedDateFallback: "Selected date",
       toggleLanguage: "Toggle language",
       toggleTheme: "Toggle theme",
+      openNavigation: "Open navigation",
+      closeNavigation: "Close navigation",
       closeModal: "Close modal",
       filterByStatus: "Filter by status",
       filterByPriority: "Filter by priority",
@@ -235,6 +263,8 @@ const translations = {
       selectedDateFallback: "วันที่เลือก",
       toggleLanguage: "สลับภาษา",
       toggleTheme: "สลับธีม",
+      openNavigation: "เปิดเมนูนำทาง",
+      closeNavigation: "ปิดเมนูนำทาง",
       closeModal: "ปิดหน้าต่าง",
       filterByStatus: "กรองตามสถานะ",
       filterByPriority: "กรองตามความสำคัญ",
@@ -286,7 +316,9 @@ const state = {
   editingTaskId: null,
   selectedTaskIcon: "task",
   iconManuallySelected: false,
-  commandQuery: ""
+  commandQuery: "",
+  sidebarOpen: false,
+  dashboardQuoteIndex: null
 };
 
 const elements = {
@@ -330,7 +362,13 @@ const elements = {
   noDueDateCount: document.querySelector("#noDueDateCount"),
   importInput: document.querySelector("#importInput"),
   languageToggle: document.querySelector("#languageToggle"),
-  themeToggle: document.querySelector("#themeToggle")
+  themeToggle: document.querySelector("#themeToggle"),
+  dashboardQuote: document.querySelector("#dashboardQuote"),
+  sidebarToggle: document.querySelector("#sidebarToggle"),
+  sidebarCloseButton: document.querySelector("#sidebarCloseButton"),
+  sidebarBackdrop: document.querySelector("#sidebarBackdrop"),
+  primarySidebar: document.querySelector("#primarySidebar"),
+  mainContent: document.querySelector(".main-content")
 };
 
 document.addEventListener("DOMContentLoaded", init);
@@ -339,6 +377,7 @@ function init() {
   applyStoredTheme();
   bindEvents();
   applyLanguage();
+  syncSidebarForViewport();
   render();
 }
 
@@ -357,6 +396,12 @@ function bindEvents() {
   document.querySelector("#viewNoDueDateTasks").addEventListener("click", showTasksSection);
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
+  elements.sidebarToggle.addEventListener("click", () => setSidebarOpen(true));
+  elements.sidebarCloseButton.addEventListener("click", () => setSidebarOpen(false));
+  elements.sidebarBackdrop.addEventListener("click", () => setSidebarOpen(false));
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", () => setSidebarOpen(false, false));
+  });
   elements.commandTrigger.addEventListener("click", openCommandPalette);
   elements.commandDialog.addEventListener("click", handleCommandDialogClick);
   elements.commandInput.addEventListener("input", handleCommandSearch);
@@ -384,11 +429,18 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.sidebarOpen) {
+      setSidebarOpen(false);
+      return;
+    }
+
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
       openCommandPalette();
     }
   });
+
+  window.addEventListener("resize", syncSidebarForViewport);
 }
 
 function createSeedTask(id, title, category, priority, dueDate, status, completedAt = null) {
@@ -464,6 +516,7 @@ function applyLanguage() {
   renderLanguageButton();
   elements.languageToggle.setAttribute("aria-label", t("toggleLanguage"));
   elements.themeToggle.setAttribute("aria-label", t("toggleTheme"));
+  updateSidebarLabels();
   elements.commandTrigger.setAttribute("aria-label", t("commandTriggerText"));
   document.querySelector("#closeCommandButton").setAttribute("aria-label", t("closeCommandPalette"));
   elements.taskIconPicker.setAttribute("aria-label", t("taskIcon"));
@@ -488,6 +541,60 @@ function applyLanguage() {
   updateSelectOptionLabels();
   renderIconPicker();
   renderCommandList();
+  renderDashboardQuote();
+}
+
+function updateSidebarLabels() {
+  elements.sidebarToggle.setAttribute("aria-label", t("openNavigation"));
+  elements.sidebarCloseButton.setAttribute("aria-label", t("closeNavigation"));
+}
+
+function setSidebarOpen(isOpen, restoreToggleFocus = true) {
+  const canOpenDrawer = window.matchMedia("(max-width: 1199px)").matches;
+  const wasOpen = state.sidebarOpen;
+  state.sidebarOpen = Boolean(isOpen && canOpenDrawer);
+  document.body.classList.toggle("sidebar-open", state.sidebarOpen);
+  elements.sidebarToggle.setAttribute("aria-expanded", String(state.sidebarOpen));
+  elements.mainContent.inert = state.sidebarOpen;
+
+  if (!state.sidebarOpen && wasOpen && restoreToggleFocus) {
+    elements.sidebarToggle.focus();
+  }
+}
+
+function syncSidebarForViewport() {
+  if (!window.matchMedia("(max-width: 1199px)").matches) {
+    setSidebarOpen(false, false);
+  }
+}
+
+function renderDashboardQuote() {
+  if (!Number.isInteger(state.dashboardQuoteIndex)) {
+    state.dashboardQuoteIndex = getNextDashboardQuoteIndex();
+  }
+
+  elements.dashboardQuote.textContent = `“${dashboardQuotes[state.dashboardQuoteIndex]}”`;
+}
+
+function getNextDashboardQuoteIndex() {
+  const nextIndex = Math.floor(Math.random() * dashboardQuotes.length);
+
+  try {
+    const storedPreviousIndex = sessionStorage.getItem(QUOTE_INDEX_KEY);
+    const previousIndex = Number(storedPreviousIndex);
+    const hasPreviousQuote = storedPreviousIndex !== null
+      && Number.isInteger(previousIndex)
+      && previousIndex >= 0
+      && previousIndex < dashboardQuotes.length;
+    const quoteIndex = dashboardQuotes.length > 1 && hasPreviousQuote && previousIndex === nextIndex
+      ? (nextIndex + 1 + Math.floor(Math.random() * (dashboardQuotes.length - 1))) % dashboardQuotes.length
+      : nextIndex;
+
+    sessionStorage.setItem(QUOTE_INDEX_KEY, String(quoteIndex));
+    return quoteIndex;
+  } catch {
+    return nextIndex;
+  }
 }
 
 function updateModalCopy() {
@@ -846,8 +953,11 @@ function getTaskIconName(task) {
 }
 
 function getIconPath(iconName) {
-  const safeIconName = Object.prototype.hasOwnProperty.call(iconAssetPaths, iconName) ? iconName : "task";
-  return iconAssetPaths[safeIconName] || iconAssetPaths.task;
+  if (Object.prototype.hasOwnProperty.call(taskIconAssetPaths, iconName)) {
+    return taskIconAssetPaths[iconName];
+  }
+
+  return iconAssetPaths[iconName] || taskIconAssetPaths.task;
 }
 
 function getIconMarkup(iconName, className = "ui-icon") {
