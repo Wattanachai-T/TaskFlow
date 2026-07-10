@@ -58,6 +58,8 @@ const translations = {
   en: {
     ui: {
       documentTitle: "TaskFlow Dashboard",
+      skipToContent: "Skip to content",
+      primaryNavigation: "Primary navigation",
       dashboard: "Dashboard",
       goodMorning: "Good morning",
       summaryToday: "Here is your task summary for today.",
@@ -78,6 +80,15 @@ const translations = {
       commandUnavailable: "Not available yet",
       noCommandsFound: "No commands found.",
       closeCommandPalette: "Close command palette",
+      previousMonth: "Previous month",
+      nextMonth: "Next month",
+      close: "Close",
+      confirm: "Confirm",
+      replaceTasks: "Replace tasks",
+      deleteTaskConfirmTitle: "Delete task",
+      clearDataConfirmTitle: "Clear local data",
+      importTasksConfirmTitle: "Replace current tasks?",
+      importSuccess: "Tasks imported successfully.",
       taskSearchPlaceholder: "Search tasks...",
       newTask: "New Task",
       addTask: "Add Task",
@@ -182,6 +193,17 @@ const translations = {
   },
   th: {
     ui: {
+      skipToContent: "ข้ามไปยังเนื้อหาหลัก",
+      primaryNavigation: "เมนูนำทางหลัก",
+      previousMonth: "เดือนก่อนหน้า",
+      nextMonth: "เดือนถัดไป",
+      close: "ปิด",
+      confirm: "ยืนยัน",
+      replaceTasks: "แทนที่งานปัจจุบัน",
+      deleteTaskConfirmTitle: "ลบงาน",
+      clearDataConfirmTitle: "ล้างข้อมูลในเครื่อง",
+      importTasksConfirmTitle: "แทนที่งานปัจจุบันหรือไม่",
+      importSuccess: "นำเข้างานเรียบร้อยแล้ว",
       documentTitle: "TaskFlow แดชบอร์ด",
       dashboard: "แดชบอร์ด",
       goodMorning: "สวัสดี",
@@ -332,7 +354,9 @@ const state = {
   iconManuallySelected: false,
   commandQuery: "",
   sidebarOpen: false,
-  dashboardQuoteIndex: null
+  dashboardQuoteIndex: null,
+  confirmAction: null,
+  dialogOpeners: new Map()
 };
 
 const elements = {
@@ -382,7 +406,14 @@ const elements = {
   sidebarCloseButton: document.querySelector("#sidebarCloseButton"),
   sidebarBackdrop: document.querySelector("#sidebarBackdrop"),
   primarySidebar: document.querySelector("#primarySidebar"),
-  mainContent: document.querySelector(".main-content")
+  mainContent: document.querySelector(".main-content"),
+  confirmationDialog: document.querySelector("#confirmationDialog"),
+  confirmationTitle: document.querySelector("#confirmationTitle"),
+  confirmationMessage: document.querySelector("#confirmationMessage"),
+  confirmationConfirmButton: document.querySelector("#confirmationConfirmButton"),
+  noticeDialog: document.querySelector("#noticeDialog"),
+  noticeTitle: document.querySelector("#noticeTitle"),
+  noticeMessage: document.querySelector("#noticeMessage")
 };
 
 document.addEventListener("DOMContentLoaded", init);
@@ -403,6 +434,11 @@ function bindEvents() {
   document.querySelector("#closeModalButton").addEventListener("click", closeModal);
   document.querySelector("#cancelModalButton").addEventListener("click", closeModal);
   document.querySelector("#closeCommandButton").addEventListener("click", closeCommandPalette);
+  document.querySelector("#confirmationCloseButton").addEventListener("click", () => closeAppDialog(elements.confirmationDialog));
+  document.querySelector("#confirmationCancelButton").addEventListener("click", () => closeAppDialog(elements.confirmationDialog));
+  document.querySelector("#confirmationConfirmButton").addEventListener("click", confirmPendingAction);
+  document.querySelector("#noticeCloseButton").addEventListener("click", () => closeAppDialog(elements.noticeDialog));
+  document.querySelector("#noticeDismissButton").addEventListener("click", () => closeAppDialog(elements.noticeDialog));
   document.querySelector("#exportButton").addEventListener("click", exportTasks);
   document.querySelector("#clearButton").addEventListener("click", clearAllData);
   document.querySelector("#prevMonthButton").addEventListener("click", () => changeCalendarMonth(-1));
@@ -427,6 +463,10 @@ function bindEvents() {
   elements.taskIconPicker.addEventListener("click", handleIconPickerClick);
   elements.calendarGrid.addEventListener("click", handleCalendarDateClick);
   elements.selectedDayTasks.addEventListener("click", handleCalendarTaskClick);
+
+  [elements.taskDialog, elements.commandDialog, elements.confirmationDialog, elements.noticeDialog].forEach((dialog) => {
+    dialog.addEventListener("close", () => restoreDialogFocus(dialog));
+  });
 
   elements.taskSearch.addEventListener("input", syncSearch);
   elements.statusFilter.addEventListener("change", (event) => {
@@ -547,6 +587,12 @@ function applyLanguage() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
     element.setAttribute("placeholder", t(element.dataset.i18nPlaceholder));
   });
+
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel));
+  });
+
+  elements.confirmationConfirmButton.textContent = t("confirm");
 
   document.querySelectorAll(".calendar-weekdays span").forEach((element, index) => {
     element.textContent = getWeekdayLabels()[index];
@@ -918,7 +964,7 @@ function handleCalendarTaskClick(event) {
     ? event.target.closest("[data-calendar-edit]")
     : null;
   if (!card) return;
-  openEditModal(Number(card.dataset.calendarEdit));
+  openEditModal(Number(card.dataset.calendarEdit), card);
 }
 
 function renderEmptyState(visibleTaskCount) {
@@ -1102,19 +1148,61 @@ function openCommandPalette() {
   elements.commandInput.value = "";
   renderCommandList();
 
-  if (typeof elements.commandDialog.showModal === "function") {
-    elements.commandDialog.showModal();
-  } else {
-    elements.commandDialog.setAttribute("open", "");
-  }
+  openAppDialog(elements.commandDialog);
   requestAnimationFrame(() => elements.commandInput.focus());
 }
 
 function closeCommandPalette() {
   state.commandQuery = "";
-  if (elements.commandDialog.open) {
-    elements.commandDialog.close();
+  closeAppDialog(elements.commandDialog);
+}
+
+function openAppDialog(dialog, opener = document.activeElement) {
+  if (!dialog || dialog.open) return;
+  state.dialogOpeners.set(dialog, opener instanceof HTMLElement ? opener : null);
+  if (typeof dialog.showModal === "function") {
+    dialog.showModal();
+  } else {
+    dialog.setAttribute("open", "");
   }
+}
+
+function closeAppDialog(dialog) {
+  if (dialog?.open) dialog.close();
+}
+
+function restoreDialogFocus(dialog) {
+  if (dialog === elements.confirmationDialog) {
+    state.confirmAction = null;
+  }
+  const opener = state.dialogOpeners.get(dialog);
+  state.dialogOpeners.delete(dialog);
+  if (opener?.isConnected) opener.focus();
+}
+
+function showNotice(title, message, opener = document.activeElement) {
+  elements.noticeTitle.textContent = title;
+  elements.noticeMessage.textContent = message;
+  openAppDialog(elements.noticeDialog, opener);
+  requestAnimationFrame(() => document.querySelector("#noticeDismissButton").focus());
+}
+
+function requestConfirmation({ title, message, confirmLabel, destructive = false, onConfirm, opener = document.activeElement }) {
+  elements.confirmationTitle.textContent = title;
+  elements.confirmationMessage.textContent = message;
+  elements.confirmationConfirmButton.textContent = confirmLabel || t("confirm");
+  elements.confirmationConfirmButton.classList.toggle("danger-button", destructive);
+  elements.confirmationConfirmButton.classList.toggle("primary-button", !destructive);
+  state.confirmAction = typeof onConfirm === "function" ? onConfirm : null;
+  openAppDialog(elements.confirmationDialog, opener);
+  requestAnimationFrame(() => elements.confirmationConfirmButton.focus());
+}
+
+function confirmPendingAction() {
+  const action = state.confirmAction;
+  state.confirmAction = null;
+  closeAppDialog(elements.confirmationDialog);
+  if (action) action();
 }
 
 function handleCommandDialogClick(event) {
@@ -1160,7 +1248,7 @@ function handleCommandSelect(event) {
   command.action();
 }
 
-function openAddModal() {
+function openAddModal(event) {
   state.editingTaskId = null;
   updateModalCopy();
   clearTaskTitleError();
@@ -1169,10 +1257,10 @@ function openAddModal() {
   elements.taskPriority.value = "medium";
   elements.taskStatus.value = "not-started";
   setSelectedTaskIcon(inferCategoryIconName(elements.taskCategory.value));
-  openModal();
+  openModal(event?.currentTarget);
 }
 
-function openEditModal(taskId) {
+function openEditModal(taskId, opener) {
   const task = findTask(taskId);
   if (!task) return;
 
@@ -1186,21 +1274,17 @@ function openEditModal(taskId) {
   elements.taskStatus.value = task.status;
   elements.taskDueDate.value = task.dueDate || "";
   setSelectedTaskIcon(getTaskIconName(task), Boolean(task.icon && VALID_ICONS.includes(String(task.icon).toLowerCase())));
-  openModal();
+  openModal(opener);
 }
 
-function openModal() {
-  if (typeof elements.taskDialog.showModal === "function") {
-    elements.taskDialog.showModal();
-  } else {
-    elements.taskDialog.setAttribute("open", "");
-  }
+function openModal(opener) {
+  openAppDialog(elements.taskDialog, opener);
   elements.taskTitle.focus();
 }
 
 function closeModal() {
   clearTaskTitleError();
-  elements.taskDialog.close();
+  closeAppDialog(elements.taskDialog);
 }
 
 function showTaskTitleError() {
@@ -1261,16 +1345,24 @@ function handleTaskAction(event) {
   const action = event.currentTarget.dataset.action;
 
   if (action === "edit") {
-    openEditModal(id);
+    openEditModal(id, event.currentTarget);
     return;
   }
 
   if (action === "delete") {
     const task = findTask(id);
-    if (task && window.confirm(t("deleteConfirm", { title: task.title }))) {
-      state.tasks = state.tasks.filter((item) => item.id !== id);
-      persistAndRender();
-    }
+    if (!task) return;
+    requestConfirmation({
+      title: t("deleteTaskConfirmTitle"),
+      message: t("deleteConfirm", { title: task.title }),
+      confirmLabel: t("delete"),
+      destructive: true,
+      opener: event.currentTarget,
+      onConfirm: () => {
+        state.tasks = state.tasks.filter((item) => item.id !== id);
+        persistAndRender();
+      }
+    });
   }
 }
 
@@ -1322,13 +1414,13 @@ function importTasks(event) {
       const parsed = JSON.parse(reader.result);
       const rawTasks = Array.isArray(parsed) ? parsed : parsed.tasks;
       if (!Array.isArray(rawTasks)) {
-        window.alert(t("importInvalidFormat"));
+        showNotice(t("importTasksConfirmTitle"), t("importInvalidFormat"), elements.importInput);
         return;
       }
 
       const normalized = normalizeTaskCollection(rawTasks);
       if (normalized.length === 0) {
-        window.alert(t("importNoValidTasks"));
+        showNotice(t("importTasksConfirmTitle"), t("importNoValidTasks"), elements.importInput);
         return;
       }
 
@@ -1340,12 +1432,19 @@ function importTasks(event) {
         count: normalized.length,
         skippedMessage
       });
-      if (window.confirm(message)) {
-        state.tasks = normalized;
-        persistAndRender();
-      }
+      requestConfirmation({
+        title: t("importTasksConfirmTitle"),
+        message,
+        confirmLabel: t("replaceTasks"),
+        opener: elements.importInput,
+        onConfirm: () => {
+          state.tasks = normalized;
+          persistAndRender();
+          showNotice(t("importTasksConfirmTitle"), t("importSuccess"), elements.importInput);
+        }
+      });
     } catch {
-      window.alert(t("importInvalidJson"));
+      showNotice(t("importTasksConfirmTitle"), t("importInvalidJson"), elements.importInput);
     } finally {
       elements.importInput.value = "";
     }
@@ -1395,9 +1494,16 @@ function normalizeImportedTask(task, usedIds = new Set()) {
 }
 
 function clearAllData() {
-  if (!window.confirm(t("clearConfirm"))) return;
-  state.tasks = [];
-  persistAndRender();
+  requestConfirmation({
+    title: t("clearDataConfirmTitle"),
+    message: t("clearConfirm"),
+    confirmLabel: t("clearData"),
+    destructive: true,
+    onConfirm: () => {
+      state.tasks = [];
+      persistAndRender();
+    }
+  });
 }
 
 function toggleLanguage() {

@@ -7,12 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Itim&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles/styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#dashboard" data-i18n="skipToContent">Skip to content</a>
     <div class="app-shell">
       <button
         class="sidebar-backdrop"
@@ -21,7 +22,7 @@
         tabindex="-1"
         aria-hidden="true"
       ></button>
-      <aside class="sidebar" id="primarySidebar" aria-label="Primary navigation">
+      <aside class="sidebar" id="primarySidebar" aria-label="Primary navigation" data-i18n-aria-label="primaryNavigation">
         <div class="sidebar-top">
           <div class="brand">
             <span class="brand-mark" aria-hidden="true"
@@ -107,7 +108,7 @@
             </div>
           </div>
 
-          <div class="header-actions" aria-label="Header tools">
+          <div class="header-actions" aria-label="Actions" data-i18n-aria-label="actions">
             <button
               class="search-field command-trigger header-search"
               id="commandTrigger"
@@ -150,7 +151,7 @@
           </div>
         </header>
 
-        <section class="status-grid" aria-label="Task status summary">
+        <section class="status-grid" aria-label="Status" data-i18n-aria-label="status">
           <article class="status-card card status-not-started-card">
             <div class="status-card-main">
               <div>
@@ -239,7 +240,8 @@
         <section
           class="analytics-grid"
           id="analytics"
-          aria-label="Task analytics"
+          aria-label="Analytics"
+          data-i18n-aria-label="analytics"
         >
           <article class="card chart-card">
             <div class="section-heading">
@@ -282,7 +284,8 @@
         <section
           class="card calendar-section"
           id="calendar"
-          aria-label="Calendar task view"
+          aria-label="Calendar"
+          data-i18n-aria-label="calendar"
         >
           <div class="section-heading calendar-heading">
             <div>
@@ -299,13 +302,14 @@
           </div>
 
           <div class="calendar-shell">
-            <article class="calendar-month-card" aria-label="Monthly calendar">
+            <article class="calendar-month-card" aria-label="Calendar" data-i18n-aria-label="calendar">
               <div class="calendar-month-header">
                 <button
                   class="calendar-nav-button"
                   id="prevMonthButton"
                   type="button"
                   aria-label="Previous month"
+                  data-i18n-aria-label="previousMonth"
                 >
                   <span aria-hidden="true">&lt;</span>
                 </button>
@@ -315,6 +319,7 @@
                   id="nextMonthButton"
                   type="button"
                   aria-label="Next month"
+                  data-i18n-aria-label="nextMonth"
                 >
                   <span aria-hidden="true">&gt;</span>
                 </button>
@@ -331,11 +336,12 @@
               <div
                 class="calendar-grid"
                 id="calendarGrid"
-                aria-label="Days in month"
+                aria-label="Calendar"
+                data-i18n-aria-label="calendar"
               ></div>
             </article>
 
-            <aside class="selected-day-panel" aria-label="Selected day tasks">
+            <aside class="selected-day-panel" aria-label="Selected Date" data-i18n-aria-label="selectedDate">
               <div class="selected-day-header">
                 <div>
                   <p class="eyebrow" data-i18n="selectedDate">Selected Date</p>
@@ -516,7 +522,7 @@
       </main>
     </div>
 
-    <dialog class="task-dialog" id="taskDialog">
+    <dialog class="task-dialog" id="taskDialog" aria-labelledby="modalTitle" aria-describedby="modalSubtitle">
       <form id="taskForm" method="dialog" novalidate>
         <div class="modal-header">
           <div class="modal-title-group">
@@ -610,12 +616,12 @@
       </form>
     </dialog>
 
-    <dialog class="command-dialog" id="commandDialog">
+    <dialog class="command-dialog" id="commandDialog" aria-labelledby="commandDialogTitle" aria-describedby="commandDialogSubtitle">
       <div class="command-panel" role="document">
         <div class="command-header">
           <div>
-            <h2 data-i18n="commandPaletteTitle">Command Palette</h2>
-            <p data-i18n="commandPaletteSubtitle">
+            <h2 id="commandDialogTitle" data-i18n="commandPaletteTitle">Command Palette</h2>
+            <p id="commandDialogSubtitle" data-i18n="commandPaletteSubtitle">
               Search actions and jump around TaskFlow.
             </p>
           </div>
@@ -639,6 +645,41 @@
           />
         </label>
         <div class="command-list" id="commandList" role="listbox"></div>
+      </div>
+    </dialog>
+
+    <dialog class="feedback-dialog" id="confirmationDialog" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage">
+      <div class="feedback-panel">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2 id="confirmationTitle"></h2>
+            <p id="confirmationMessage"></p>
+          </div>
+          <button class="modal-close-button" id="confirmationCloseButton" type="button" aria-label="Close dialog" data-i18n-aria-label="closeModal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-button" id="confirmationCancelButton" type="button" data-i18n="cancel">Cancel</button>
+          <button class="danger-button" id="confirmationConfirmButton" type="button">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="feedback-dialog" id="noticeDialog" aria-labelledby="noticeTitle" aria-describedby="noticeMessage">
+      <div class="feedback-panel">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <h2 id="noticeTitle"></h2>
+            <p id="noticeMessage"></p>
+          </div>
+          <button class="modal-close-button" id="noticeCloseButton" type="button" aria-label="Close dialog" data-i18n-aria-label="closeModal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-button" id="noticeDismissButton" type="button" data-i18n="close">Close</button>
+        </div>
       </div>
     </dialog>
 
