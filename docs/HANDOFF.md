@@ -1,101 +1,121 @@
-﻿# TaskFlow Handoff
+# TaskFlow Project Handoff
 
-## Current Project Status
+## Purpose
 
-TaskFlow is a working localStorage-powered personal to-do dashboard built with plain HTML, CSS, and JavaScript. It runs from `index.html` without a build step and has no backend.
+This document provides the operational context required to maintain and extend TaskFlow. It is intended for developers and coding agents taking ownership of future work.
 
-Current files of interest:
+## Project Overview
 
-- `index.html`
-- `styles/styles.css`
-- `scripts/app.js`
-- `docs/design.md`
-- `assets/icons/raw/`
+TaskFlow is a local-first personal task dashboard built with plain HTML, CSS, and JavaScript. It has no backend, authentication, build step, framework, or third-party UI/chart dependency. The application must remain usable when `index.html` is opened directly in a browser or served through VS Code Live Server.
 
-## Working Features
+## Repository Structure
 
-- Dashboard shell with sidebar, top header, status cards, analytics, calendar, and Daily Tasks table.
-- Task CRUD through a reusable add/edit modal.
-- Task fields include `icon` as well as title, category, priority, due date, status, and timestamps.
-- Status dropdown and completion checkbox update tasks.
-- Dynamic status counts.
-- Dynamic completion rate and status breakdown.
-- Weekly completed chart using `completedAt`.
-- Search by task title or category.
-- Filter by status and priority.
-- Sort by due date ascending/descending.
-- Export tasks as JSON.
-- Import JSON array or `{ "tasks": [...] }`.
-- Clear local task data.
-- Theme toggle persisted with `taskflow.theme`.
-- EN/TH language toggle persisted with `taskflow.lang`.
-- Command palette trigger in the header for quick app actions.
-- Compact monthly calendar view with selected day task cards.
-- Add/Edit modal includes task icon picker and inline title validation.
-- Local SVG icons load from `assets/icons/raw/`.
-- Main UI icons are normalized through CSS mask-based icon helpers so colors can be controlled by CSS.
+| Path | Responsibility |
+| --- | --- |
+| `index.html` | Application shell, semantic markup, dialogs, and static UI text. |
+| `styles/styles.css` | Design tokens, layout, responsive rules, theme variables, and component styling. |
+| `scripts/app.js` | State management, rendering, task CRUD, localStorage, import/export, i18n, charts, calendar, and dialogs. |
+| `docs/design.md` | Original visual and product reference. Validate against the implementation before applying it literally. |
+| `assets/icons/raw/` | Local SVG assets used by the icon helper and CSS masks. |
+| `AGENTS.md` | Mandatory implementation constraints and working conventions. |
 
-## Recent Work
+## Current Functional Scope
 
-- Added Thai/English language switching.
-- Polished header toolbar, status cards, analytics, Daily Tasks table, calendar, and modal.
-- Switched the app font to Itim.
-- Increased and normalized font sizing after switching to Itim so English and Thai text are easier to read.
-- Added task icon support to the data model.
-- Added icon picker in the Add/Edit modal.
-- Changed task row icon badges from initials to selected local SVG icons.
-- Added import normalization for missing or invalid icons.
-- Added local SVG icon mapping in `scripts/app.js` for dashboard, task, calendar, analytics, settings, action, status, avatar, and theme icons.
-- Added new local icons from `assets/icons/raw/`: edit, trash, circle-user, steps-carreer, progress-complete, brightness, and moon-stars.
-- Updated Edit/Delete action buttons to use compact icon buttons inside an aligned action group.
-- Removed the decorative icon from the language toggle so it displays only `EN` or `TH`.
-- Updated the theme toggle to switch between brightness and moon-stars icons.
-- Added a command palette modal opened from the header trigger, with quick actions for task creation, navigation, theme/language toggles, import, and export.
-- Added a real dark theme palette using theme variables instead of dim opacity overlays on parent containers.
-- Improved dark mode contrast for cards, controls, calendar cells, selected-day details, and the Daily Tasks table.
-- Switched many UI icons from raw `<img>` rendering to CSS mask spans through the existing icon helper, so icon color can follow the design system.
-- Made task ID normalization collision-safe for existing data and imports, while preserving all valid imported tasks.
-- Prevented corrupt `taskflow.tasks` JSON from being overwritten by the sample tasks.
-- Prevented the command palette from opening twice and removed the non-functional Settings navigation links.
-- Localized import confirmation and error messages for English and Thai.
+- Dashboard with status cards, weekly completion chart, completion-rate chart, compact calendar, and Daily Tasks view.
+- Task creation, editing, deletion, status changes, and completion checkbox behavior.
+- Search, status filter, priority filter, and due-date sorting.
+- JSON export, validated JSON import, and local data clearing.
+- English and Thai interface switching.
+- Light and dark theme switching.
+- Command palette for supported navigation and common actions.
+- Compact monthly calendar with selected-day task details.
+- Task icon picker with category-based fallback icons.
+- Responsive desktop, tablet, and mobile layouts, including a drawer navigation pattern below desktop width.
 
-## Current Problems / Risks
+## Data Contract
 
-- `docs/design.md` is partly outdated compared with the implemented app.
-- A dedicated Settings view is not implemented yet; its non-functional sidebar and command-palette links were removed.
-- Some downloaded raw SVG files may still have inconsistent source artwork; CSS mask rendering controls color, but shape/weight may still vary by file.
-- Google Font requires network access unless cached.
-- No automated test suite exists.
-- Manual browser testing is still needed after UI changes.
-- Browser-based visual verification was attempted, but no in-app browser session was available in the environment at that time.
+Task data is stored in `localStorage` under `taskflow.tasks` as an array of objects:
 
-## Next Suggested Tasks
+```js
+{
+  id,
+  title,
+  category,
+  icon,
+  priority,
+  dueDate,
+  status,
+  createdAt,
+  updatedAt,
+  completedAt
+}
+```
 
-- Add localized import/export/clear success and error messaging.
-- Add a lightweight toast system instead of `alert()` / `confirm()` where appropriate.
-- Consider a real Settings section for language, theme, and data controls.
-- Do a manual visual QA pass in the browser for light mode, dark mode, English, and Thai.
-- Verify every icon path in DevTools Network and replace any visually mismatched SVGs if needed.
-- Clean up or update `docs/design.md` so it matches the current implementation.
-- Add a short manual test checklist to README or a separate testing doc.
-- Consider normalizing existing localStorage tasks on startup and persisting the normalized `icon` field.
+Rules:
 
-## Important Warnings
+- `dueDate` is `YYYY-MM-DD` or an empty string.
+- `createdAt`, `updatedAt`, and `completedAt` are ISO timestamps.
+- `completedAt` is `null` unless `status` is `completed`.
+- Valid statuses: `not-started`, `in-progress`, `completed`.
+- Valid priorities: `high`, `medium`, `low`.
+- Valid icons: `task`, `code`, `book`, `clipboard`, `file`, `folder`, `calendar`, `user`, `check`, `star`.
+- Imported and loaded tasks are normalized. Duplicate or invalid IDs are replaced with unique numeric IDs.
+- Invalid `taskflow.tasks` JSON is left untouched to avoid overwriting recoverable user data; the app renders an empty task list until the user imports valid data or clears local data.
 
-- Do not add frameworks or external UI/chart/icon libraries.
-- Do not introduce a build step unless the user explicitly asks.
-- Keep the app runnable by opening `index.html`.
-- Do not break existing localStorage data.
-- Use `assets/icons/raw/` paths relative to `index.html`.
-- Do not use absolute paths like `/assets/...`.
-- Prefer the existing icon helper/CSS mask approach for UI icons when the icon color should match the theme.
-- Plain `<img>` rendering is still acceptable only when preserving the original SVG colors is intentional.
-- If task data changes, keep import normalization backward-compatible.
+Additional localStorage keys:
 
-## Continuation Prompt
+| Key | Values | Purpose |
+| --- | --- | --- |
+| `taskflow.theme` | `light`, `dark` | Persists the selected theme. |
+| `taskflow.lang` | `en`, `th` | Persists the selected language. |
 
-Paste this into another AI assistant to continue:
+## Implementation Conventions
+
+- Keep the project dependency-free: do not introduce frameworks, CSS libraries, icon libraries, build tooling, or CDNs.
+- Use relative asset paths only. Do not use root-relative `/assets/...` paths or local machine paths.
+- Use the existing CSS mask icon helper for theme-controlled UI icons. Do not use `<svg><use></use></svg>` with the downloaded raw SVG files.
+- Add every new user-facing string to both language dictionaries in `scripts/app.js`.
+- Preserve task data backward compatibility when changing the model or import behavior.
+- Keep DOM changes scoped to the existing structure and avoid unrelated refactors.
+- Do not expose a navigation item or command action until its destination is implemented.
+
+## Known Limitations
+
+- `docs/design.md` contains earlier design direction and may not reflect the latest implementation.
+- A dedicated Settings view has not been implemented.
+- Import and clear-data confirmations use native browser dialogs. They are localized, but there is no toast or custom notification system.
+- Source SVG artwork can vary in shape and weight even when CSS mask coloring is consistent.
+- The Itim font is loaded from Google Fonts and requires network access unless already cached.
+- Automated tests are not configured; browser validation remains manual.
+
+## Recommended Next Work
+
+1. Perform a structured visual QA pass in light/dark themes, English/Thai, and desktop/tablet/mobile breakpoints.
+2. Replace native confirmation and alert dialogs with an accessible local notification/confirmation component.
+3. Update `docs/design.md` to match the implemented navigation, calendar, icon, and responsive behavior.
+4. Add a dedicated Settings view only if it has a defined functional scope.
+5. Add lightweight automated checks for task normalization, filtering, and import validation if a test strategy is approved.
+
+## Validation Before Handoff or Merge
+
+Run the following after JavaScript or structural changes:
+
+```powershell
+node --check scripts/app.js
+git diff --check
+```
+
+Manually verify:
+
+- Add, edit, delete, completion, and status-change flows.
+- Search, filters, sorting, import/export, and clear data.
+- Language and theme switching without a page reload.
+- Calendar navigation, selected-day task editing, and no-due-date summary behavior.
+- Icon rendering without failed network requests.
+- Layout at desktop, tablet, and mobile widths without horizontal overflow.
+
+## Continuation Brief
 
 ```text
-You are continuing the TaskFlow project. It is a plain HTML/CSS/JS localStorage-powered personal to-do dashboard with no backend, no framework, and no external libraries. Read README.md, AGENTS.md, docs/HANDOFF.md, index.html, styles/styles.css, scripts/app.js, and docs/design.md before editing. Preserve existing CRUD, localStorage, import/export, language toggle, theme toggle, command palette, dashboard counts, charts, calendar, and icon picker behavior. Keep the app runnable by opening index.html. Use local SVG icons from assets/icons/raw/ with relative paths. Prefer the existing CSS mask icon helper for UI icons that need theme-controlled colors. Do not add React, Vue, Tailwind, Bootstrap, Chart.js, icon libraries, CDNs, or a build step. Make scoped changes only and run node --check scripts/app.js plus git diff --check after edits.
+Continue TaskFlow as a dependency-free HTML/CSS/JavaScript application. Read AGENTS.md, README.md, docs/HANDOFF.md, index.html, styles/styles.css, scripts/app.js, and docs/design.md before editing. Preserve localStorage compatibility, task CRUD, import/export, i18n, themes, command palette, charts, calendar, icon picker, and responsive behavior. Use local SVG assets with relative paths and the existing CSS mask icon helper for theme-controlled icons. Make focused changes, add EN/TH strings for new UI text, then run node --check scripts/app.js and git diff --check.
 ```
