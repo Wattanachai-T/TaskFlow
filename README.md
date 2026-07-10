@@ -7,8 +7,8 @@ The app has no backend, no login, no framework, and stores user data in the brow
 ## Tech Stack
 
 - HTML: `index.html`
-- CSS: `styles.css`
-- JavaScript: `app.js`
+- CSS: `styles/styles.css`
+- JavaScript: `scripts/app.js`
 - Browser storage: `localStorage`
 - Local SVG assets: `assets/icons/raw/`
 - Google Font: Itim from Google Fonts
@@ -24,9 +24,10 @@ You can also use VS Code Live Server for easier refresh and browser testing. The
 ## Main Files
 
 - `index.html`: Dashboard structure, sidebar, header, status cards, analytics, calendar, task table, and add/edit modal.
-- `styles.css`: Visual design, layout, responsive behavior, dark mode, table styling, modal styling, icon picker styling.
-- `app.js`: Task state, localStorage persistence, CRUD, filters, sorting, charts, calendar rendering, import/export, theme toggle, language toggle, icon selection.
-- `design.md`: Original product/design direction. Some implementation details are now newer than this file.
+- `styles/styles.css`: Visual design, layout, responsive behavior, dark mode, table styling, modal styling, icon picker styling.
+- `scripts/app.js`: Task state, localStorage persistence, CRUD, filters, sorting, charts, calendar rendering, import/export, theme toggle, language toggle, icon selection.
+- `docs/design.md`: Original product/design direction. Some implementation details are now newer than this file.
+- `docs/HANDOFF.md`: Current project state, known risks, and continuation notes for future contributors.
 - `assets/icons/raw/`: Downloaded SVG files used by task icons and icon picker.
 
 ## Current Features
@@ -85,7 +86,7 @@ The app expects SVG icons at:
 assets/icons/raw/
 ```
 
-Task row icons and the modal icon picker currently render local SVG files with `<img>` tags. Paths are relative to `index.html`, for example:
+UI icons are rendered through CSS mask spans, which lets their color follow the current theme. Task rows and the modal icon picker use the existing icon helper with local SVG paths, for example:
 
 ```text
 assets/icons/raw/calendar-svgrepo-com.svg
@@ -93,9 +94,9 @@ assets/icons/raw/calendar-svgrepo-com.svg
 
 ## Known Issues / Polish Needed
 
-- `design.md` still contains some older guidance that does not fully match the current implementation.
-- Sidebar items such as Analytics and Settings are mostly navigation anchors; Settings is not a full feature view yet.
-- Import error/confirmation messages are still simple browser alerts and are not fully localized.
-- Local SVG files are rendered with `<img>`, so their internal SVG colors control the icon color.
+- `docs/design.md` still contains some older guidance that does not fully match the current implementation.
+- The Settings view is not implemented yet, so it is intentionally not shown in the sidebar or command palette.
+- Import confirmation and error messages use the current app language, but still use browser dialogs.
+- Most local SVG files are used as CSS masks, so UI icon colors are controlled by the TaskFlow theme variables.
 - Google Font loading requires internet access unless cached.
 - No automated tests are configured yet; testing is manual in the browser.

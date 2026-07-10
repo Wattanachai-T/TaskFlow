@@ -7,9 +7,9 @@ TaskFlow is a working localStorage-powered personal to-do dashboard built with p
 Current files of interest:
 
 - `index.html`
-- `styles.css`
-- `app.js`
-- `design.md`
+- `styles/styles.css`
+- `scripts/app.js`
+- `docs/design.md`
 - `assets/icons/raw/`
 
 ## Working Features
@@ -45,7 +45,7 @@ Current files of interest:
 - Added icon picker in the Add/Edit modal.
 - Changed task row icon badges from initials to selected local SVG icons.
 - Added import normalization for missing or invalid icons.
-- Added local SVG icon mapping in `app.js` for dashboard, task, calendar, analytics, settings, action, status, avatar, and theme icons.
+- Added local SVG icon mapping in `scripts/app.js` for dashboard, task, calendar, analytics, settings, action, status, avatar, and theme icons.
 - Added new local icons from `assets/icons/raw/`: edit, trash, circle-user, steps-carreer, progress-complete, brightness, and moon-stars.
 - Updated Edit/Delete action buttons to use compact icon buttons inside an aligned action group.
 - Removed the decorative icon from the language toggle so it displays only `EN` or `TH`.
@@ -54,13 +54,15 @@ Current files of interest:
 - Added a real dark theme palette using theme variables instead of dim opacity overlays on parent containers.
 - Improved dark mode contrast for cards, controls, calendar cells, selected-day details, and the Daily Tasks table.
 - Switched many UI icons from raw `<img>` rendering to CSS mask spans through the existing icon helper, so icon color can follow the design system.
+- Made task ID normalization collision-safe for existing data and imports, while preserving all valid imported tasks.
+- Prevented corrupt `taskflow.tasks` JSON from being overwritten by the sample tasks.
+- Prevented the command palette from opening twice and removed the non-functional Settings navigation links.
+- Localized import confirmation and error messages for English and Thai.
 
 ## Current Problems / Risks
 
-- `design.md` is partly outdated compared with the implemented app.
-- Browser alert/confirm messages for import are not fully localized.
-- Sidebar `Settings` is present visually but not implemented as a separate feature.
-- Some documentation may still mention `<img>` icons, but much of the current UI now uses CSS mask icons.
+- `docs/design.md` is partly outdated compared with the implemented app.
+- A dedicated Settings view is not implemented yet; its non-functional sidebar and command-palette links were removed.
 - Some downloaded raw SVG files may still have inconsistent source artwork; CSS mask rendering controls color, but shape/weight may still vary by file.
 - Google Font requires network access unless cached.
 - No automated test suite exists.
@@ -72,10 +74,9 @@ Current files of interest:
 - Add localized import/export/clear success and error messaging.
 - Add a lightweight toast system instead of `alert()` / `confirm()` where appropriate.
 - Consider a real Settings section for language, theme, and data controls.
-- Update README.md and AGENTS.md icon notes so they describe the current CSS mask icon approach accurately.
 - Do a manual visual QA pass in the browser for light mode, dark mode, English, and Thai.
 - Verify every icon path in DevTools Network and replace any visually mismatched SVGs if needed.
-- Clean up or update `design.md` so it matches the current implementation.
+- Clean up or update `docs/design.md` so it matches the current implementation.
 - Add a short manual test checklist to README or a separate testing doc.
 - Consider normalizing existing localStorage tasks on startup and persisting the normalized `icon` field.
 
@@ -96,5 +97,5 @@ Current files of interest:
 Paste this into another AI assistant to continue:
 
 ```text
-You are continuing the TaskFlow project. It is a plain HTML/CSS/JS localStorage-powered personal to-do dashboard with no backend, no framework, and no external libraries. Read README.md, AGENTS.md, HANDOFF.md, index.html, styles.css, app.js, and design.md before editing. Preserve existing CRUD, localStorage, import/export, language toggle, theme toggle, command palette, dashboard counts, charts, calendar, and icon picker behavior. Keep the app runnable by opening index.html. Use local SVG icons from assets/icons/raw/ with relative paths. Prefer the existing CSS mask icon helper for UI icons that need theme-controlled colors. Do not add React, Vue, Tailwind, Bootstrap, Chart.js, icon libraries, CDNs, or a build step. Make scoped changes only and run node --check app.js plus git diff --check after edits.
+You are continuing the TaskFlow project. It is a plain HTML/CSS/JS localStorage-powered personal to-do dashboard with no backend, no framework, and no external libraries. Read README.md, AGENTS.md, docs/HANDOFF.md, index.html, styles/styles.css, scripts/app.js, and docs/design.md before editing. Preserve existing CRUD, localStorage, import/export, language toggle, theme toggle, command palette, dashboard counts, charts, calendar, and icon picker behavior. Keep the app runnable by opening index.html. Use local SVG icons from assets/icons/raw/ with relative paths. Prefer the existing CSS mask icon helper for UI icons that need theme-controlled colors. Do not add React, Vue, Tailwind, Bootstrap, Chart.js, icon libraries, CDNs, or a build step. Make scoped changes only and run node --check scripts/app.js plus git diff --check after edits.
 ```

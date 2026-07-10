@@ -157,6 +157,13 @@ const translations = {
       deleteTaskNamed: "Delete {title}",
       deleteConfirm: "Delete \"{title}\"?\n\nThis action cannot be undone.",
       clearConfirm: "Clear all local TaskFlow data?\n\nThis action cannot be undone.",
+      importInvalidFormat: "Import failed: JSON must be an array or an object with a tasks array.",
+      importNoValidTasks: "Import failed: no valid tasks found.",
+      importInvalidJson: "Import failed: invalid JSON file.",
+      importConfirmOne: "Import {count} task and replace your current tasks?{skippedMessage}",
+      importConfirmMany: "Import {count} tasks and replace your current tasks?{skippedMessage}",
+      importSkippedOne: "\n\n{count} invalid task was skipped.",
+      importSkippedMany: "\n\n{count} invalid tasks were skipped.",
       selectedTaskCount: "{count} task",
       selectedTasksCount: "{count} tasks"
     },
@@ -275,6 +282,13 @@ const translations = {
       deleteTaskNamed: "ลบ {title}",
       deleteConfirm: "ลบ \"{title}\"?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้",
       clearConfirm: "ล้างข้อมูล TaskFlow ทั้งหมดในเครื่องนี้?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้",
+      importInvalidFormat: "นำเข้าไม่สำเร็จ: JSON ต้องเป็นอาร์เรย์ หรือออบเจ็กต์ที่มี tasks เป็นอาร์เรย์",
+      importNoValidTasks: "นำเข้าไม่สำเร็จ: ไม่พบงานที่ใช้งานได้",
+      importInvalidJson: "นำเข้าไม่สำเร็จ: ไฟล์ JSON ไม่ถูกต้อง",
+      importConfirmOne: "นำเข้า {count} งานและแทนที่งานปัจจุบันหรือไม่?{skippedMessage}",
+      importConfirmMany: "นำเข้า {count} งานและแทนที่งานปัจจุบันหรือไม่?{skippedMessage}",
+      importSkippedOne: "\n\nข้ามงานที่ไม่ถูกต้อง {count} รายการ",
+      importSkippedMany: "\n\nข้ามงานที่ไม่ถูกต้อง {count} รายการ",
       selectedTaskCount: "{count} งาน",
       selectedTasksCount: "{count} งาน"
     },
@@ -469,10 +483,10 @@ function loadTasks() {
   try {
     const parsed = JSON.parse(savedTasks);
     const source = Array.isArray(parsed) ? parsed : [];
-    return source.map(normalizeImportedTask).filter(Boolean);
+    return normalizeTaskCollection(source);
   } catch {
-    localStorage.setItem(TASKS_KEY, JSON.stringify(sampleTasks));
-    return [...sampleTasks];
+    // Keep unreadable data intact so a user can recover it from browser storage.
+    return [];
   }
 }
 
@@ -1074,8 +1088,6 @@ function getCommandItems() {
     { id: "tasks", icon: "task", labelKey: "commandGoTasks", action: () => navigateToSection("tasks") },
     { id: "calendar", icon: "calendar", labelKey: "commandGoCalendar", action: () => navigateToSection("calendar") },
     { id: "analytics", icon: "analytics", labelKey: "commandGoAnalytics", action: () => navigateToSection("analytics") },
-    // Settings is visible in the sidebar, but there is not a real #settings section yet.
-    { id: "settings", icon: "settings", labelKey: "commandGoSettings", disabled: true },
     { id: "toggle-theme", icon: "brightness", labelKey: "commandToggleTheme", action: toggleTheme },
     { id: "toggle-language", icon: "book", labelKey: "commandToggleLanguage", action: toggleLanguage },
     { id: "export-json", icon: "file", labelKey: "commandExportJson", action: exportTasks },
@@ -1084,7 +1096,7 @@ function getCommandItems() {
 }
 
 function openCommandPalette() {
-  if (elements.taskDialog.open) return;
+  if (elements.taskDialog.open || elements.commandDialog.open) return;
   state.commandQuery = "";
   elements.commandInput.value = "";
   renderCommandList();
@@ -1219,7 +1231,7 @@ function saveTaskFromForm(event) {
     : null;
 
   const taskData = {
-    id: existingTask?.id || getNextId(),
+    id: existingTask?.id || getNextId(new Set(state.tasks.map((task) => task.id))),
     title,
     category: elements.taskCategory.value.trim(),
     icon: normalizeIconName(state.selectedTaskIcon, elements.taskCategory.value),
@@ -1309,24 +1321,30 @@ function importTasks(event) {
       const parsed = JSON.parse(reader.result);
       const rawTasks = Array.isArray(parsed) ? parsed : parsed.tasks;
       if (!Array.isArray(rawTasks)) {
-        window.alert("Import failed: JSON must be an array or an object with a tasks array.");
+        window.alert(t("importInvalidFormat"));
         return;
       }
 
-      const normalized = rawTasks.map(normalizeImportedTask).filter(Boolean);
+      const normalized = normalizeTaskCollection(rawTasks);
       if (normalized.length === 0) {
-        window.alert("Import failed: no valid tasks found.");
+        window.alert(t("importNoValidTasks"));
         return;
       }
 
       const skipped = rawTasks.length - normalized.length;
-      const message = `Import ${normalized.length} task${normalized.length === 1 ? "" : "s"} and replace your current tasks?${skipped ? `\n\n${skipped} invalid task${skipped === 1 ? " was" : "s were"} skipped.` : ""}`;
+      const skippedMessage = skipped
+        ? t(skipped === 1 ? "importSkippedOne" : "importSkippedMany", { count: skipped })
+        : "";
+      const message = t(normalized.length === 1 ? "importConfirmOne" : "importConfirmMany", {
+        count: normalized.length,
+        skippedMessage
+      });
       if (window.confirm(message)) {
         state.tasks = normalized;
         persistAndRender();
       }
     } catch {
-      window.alert("Import failed: invalid JSON file.");
+      window.alert(t("importInvalidJson"));
     } finally {
       elements.importInput.value = "";
     }
@@ -1334,7 +1352,12 @@ function importTasks(event) {
   reader.readAsText(file);
 }
 
-function normalizeImportedTask(task) {
+function normalizeTaskCollection(tasks) {
+  const usedIds = new Set();
+  return tasks.map((task) => normalizeImportedTask(task, usedIds)).filter(Boolean);
+}
+
+function normalizeImportedTask(task, usedIds = new Set()) {
   if (!task || typeof task !== "object") return null;
   const title = String(task.title || "").trim();
   const category = String(task.category || "").trim();
@@ -1350,8 +1373,14 @@ function normalizeImportedTask(task) {
   const dueDate = isValidDateInput(task.dueDate) ? task.dueDate : "";
   const completedAt = status === "completed" ? (isValidDateTime(task.completedAt) ? task.completedAt : now) : null;
 
+  const importedId = Number(task.id);
+  const id = Number.isFinite(importedId) && !usedIds.has(importedId)
+    ? importedId
+    : getNextId(usedIds);
+  usedIds.add(id);
+
   return {
-    id: Number.isFinite(Number(task.id)) ? Number(task.id) : getNextId(),
+    id,
     title,
     category,
     icon: normalizeIconName(task.icon, category),
@@ -1437,8 +1466,12 @@ function findTask(id) {
   return state.tasks.find((task) => task.id === id);
 }
 
-function getNextId() {
-  return Date.now() + Math.floor(Math.random() * 1000);
+function getNextId(usedIds = new Set()) {
+  let id;
+  do {
+    id = Date.now() + Math.floor(Math.random() * 1000);
+  } while (usedIds.has(id));
+  return id;
 }
 
 function formatDate(value) {

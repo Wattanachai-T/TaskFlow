@@ -201,7 +201,7 @@ a:focus-visible {
 .button-icon,
 .control-icon,
 .heading-icon {
-  --icon-url: url("assets/icons/raw/tasks-app-svgrepo-com.svg");
+  --icon-url: url("../assets/icons/raw/tasks-app-svgrepo-com.svg");
   display: inline-block;
   width: 18px;
   height: 18px;
@@ -212,26 +212,26 @@ a:focus-visible {
   -webkit-mask: var(--icon-url) center / contain no-repeat;
 }
 
-.icon-analytics { --icon-url: url("assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg"); }
-.icon-book { --icon-url: url("assets/icons/raw/book-closed-svgrepo-com.svg"); }
-.icon-brightness { --icon-url: url("assets/icons/raw/brightness.svg"); }
-.icon-circle-user { --icon-url: url("assets/icons/raw/circle-user.svg"); }
-.icon-calendar { --icon-url: url("assets/icons/raw/calendar-svgrepo-com.svg"); }
-.icon-check { --icon-url: url("assets/icons/raw/check-mark-circle-svgrepo-com.svg"); }
-.icon-clipboard { --icon-url: url("assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg"); }
-.icon-code { --icon-url: url("assets/icons/raw/com-laptop-code-svgrepo-com.svg"); }
-.icon-dashboard { --icon-url: url("assets/icons/raw/dashboard-svgrepo-com.svg"); }
-.icon-edit { --icon-url: url("assets/icons/raw/edit.svg"); }
-.icon-file { --icon-url: url("assets/icons/raw/file-folder-2-svgrepo-com.svg"); }
-.icon-folder { --icon-url: url("assets/icons/raw/folder-alt-svgrepo-com.svg"); }
-.icon-moon-stars { --icon-url: url("assets/icons/raw/moon-stars.svg"); }
-.icon-user { --icon-url: url("assets/icons/raw/people-svgrepo-com.svg"); }
-.icon-progress-complete { --icon-url: url("assets/icons/raw/progress-complete.svg"); }
-.icon-settings { --icon-url: url("assets/icons/raw/setting-2-svgrepo-com.svg"); }
-.icon-steps-carreer { --icon-url: url("assets/icons/raw/steps-carreer.svg"); }
-.icon-star { --icon-url: url("assets/icons/raw/star-fall-svgrepo-com.svg"); }
-.icon-task { --icon-url: url("assets/icons/raw/tasks-app-svgrepo-com.svg"); }
-.icon-trash { --icon-url: url("assets/icons/raw/trash.svg"); }
+.icon-analytics { --icon-url: url("../assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg"); }
+.icon-book { --icon-url: url("../assets/icons/raw/book-closed-svgrepo-com.svg"); }
+.icon-brightness { --icon-url: url("../assets/icons/raw/brightness.svg"); }
+.icon-circle-user { --icon-url: url("../assets/icons/raw/circle-user.svg"); }
+.icon-calendar { --icon-url: url("../assets/icons/raw/calendar-svgrepo-com.svg"); }
+.icon-check { --icon-url: url("../assets/icons/raw/check-mark-circle-svgrepo-com.svg"); }
+.icon-clipboard { --icon-url: url("../assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg"); }
+.icon-code { --icon-url: url("../assets/icons/raw/com-laptop-code-svgrepo-com.svg"); }
+.icon-dashboard { --icon-url: url("../assets/icons/raw/dashboard-svgrepo-com.svg"); }
+.icon-edit { --icon-url: url("../assets/icons/raw/edit.svg"); }
+.icon-file { --icon-url: url("../assets/icons/raw/file-folder-2-svgrepo-com.svg"); }
+.icon-folder { --icon-url: url("../assets/icons/raw/folder-alt-svgrepo-com.svg"); }
+.icon-moon-stars { --icon-url: url("../assets/icons/raw/moon-stars.svg"); }
+.icon-user { --icon-url: url("../assets/icons/raw/people-svgrepo-com.svg"); }
+.icon-progress-complete { --icon-url: url("../assets/icons/raw/progress-complete.svg"); }
+.icon-settings { --icon-url: url("../assets/icons/raw/setting-2-svgrepo-com.svg"); }
+.icon-steps-carreer { --icon-url: url("../assets/icons/raw/steps-carreer.svg"); }
+.icon-star { --icon-url: url("../assets/icons/raw/star-fall-svgrepo-com.svg"); }
+.icon-task { --icon-url: url("../assets/icons/raw/tasks-app-svgrepo-com.svg"); }
+.icon-trash { --icon-url: url("../assets/icons/raw/trash.svg"); }
 
 .search-icon {
   position: relative;

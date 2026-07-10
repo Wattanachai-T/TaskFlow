@@ -14,9 +14,9 @@ This file is for AI coding agents and developers continuing TaskFlow.
 ## Main File Responsibilities
 
 - `index.html`: DOM structure and semantic sections.
-- `styles.css`: Layout, design system, responsive behavior, theme styles, modal/table/calendar/icon styling.
-- `app.js`: Application state, rendering, task CRUD, localStorage, import/export, charts, calendar, i18n, theme, icon picker.
-- `design.md`: Reference design/product direction; verify against current code before following it literally.
+- `styles/styles.css`: Layout, design system, responsive behavior, theme styles, modal/table/calendar/icon styling.
+- `scripts/app.js`: Application state, rendering, task CRUD, localStorage, import/export, charts, calendar, i18n, theme, icon picker.
+- `docs/design.md`: Reference design/product direction; verify against current code before following it literally.
 - `assets/icons/raw/`: Local SVG image assets.
 
 ## Task Data Model
@@ -73,7 +73,7 @@ Valid icons:
 
 ## Language / i18n Rules
 
-- Use the `translations` object in `app.js`.
+- Use the `translations` object in `scripts/app.js`.
 - English is `en`; Thai is `th`.
 - Persist language with `taskflow.lang`.
 - Add new UI strings to both languages.
@@ -90,7 +90,7 @@ assets/icons/raw/
 ```
 
 - Use relative paths from `index.html`; do not use leading `/`.
-- Current task rows and icon picker render icons as `<img>`.
+- Prefer the existing CSS mask icon helper for UI, task-row, and icon-picker SVGs so colors follow the active theme.
 - Do not use `<svg><use href="..."></use></svg>` with downloaded raw SVG files.
 - If an icon is missing or invalid, fall back to `task`.
 - Keep task icon badges around 40px to 44px square.
@@ -119,11 +119,11 @@ Current category fallback mapping:
 
 ## Preferred Workflow For Future AI Edits
 
-1. Inspect `index.html`, `styles.css`, `app.js`, and relevant assets before editing.
+1. Inspect `index.html`, `styles/styles.css`, `scripts/app.js`, and relevant assets before editing.
 2. Make small, scoped changes.
 3. Avoid unrelated refactors.
 4. Preserve localStorage data shape or add backward-compatible normalization.
 5. Keep import/export compatible with older task JSON when possible.
-6. Run `node --check app.js` after JavaScript edits.
+6. Run `node --check scripts/app.js` after JavaScript edits.
 7. Run `git diff --check` after edits.
 8. Manually test in the browser when UI behavior changes.
