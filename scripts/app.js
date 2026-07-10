@@ -19,39 +19,39 @@ const dashboardQuotes = [
 ];
 
 const taskIconAssetPaths = {
-  task: "assets/icons/raw/task-icon/list.svg",
-  code: "assets/icons/raw/task-icon/code-window.svg",
-  book: "assets/icons/raw/task-icon/book-bookmark.svg",
-  clipboard: "assets/icons/raw/task-icon/brand-strategy.svg",
-  file: "assets/icons/raw/task-icon/envelope.svg",
-  folder: "assets/icons/raw/task-icon/computer.svg",
-  calendar: "assets/icons/raw/task-icon/ticket.svg",
-  user: "assets/icons/raw/task-icon/graduation-cap.svg",
-  check: "assets/icons/raw/task-icon/coins.svg",
-  star: "assets/icons/raw/task-icon/palette.svg"
+  task: "../assets/icons/raw/task-icon/list.svg",
+  code: "../assets/icons/raw/task-icon/code-window.svg",
+  book: "../assets/icons/raw/task-icon/book-bookmark.svg",
+  clipboard: "../assets/icons/raw/task-icon/brand-strategy.svg",
+  file: "../assets/icons/raw/task-icon/envelope.svg",
+  folder: "../assets/icons/raw/task-icon/computer.svg",
+  calendar: "../assets/icons/raw/task-icon/ticket.svg",
+  user: "../assets/icons/raw/task-icon/graduation-cap.svg",
+  check: "../assets/icons/raw/task-icon/coins.svg",
+  star: "../assets/icons/raw/task-icon/palette.svg"
 };
 
 const iconAssetPaths = {
-  analytics: "assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg",
-  brightness: "assets/icons/raw/brightness.svg",
-  "circle-user": "assets/icons/raw/circle-user.svg",
-  task: "assets/icons/raw/tasks-app-svgrepo-com.svg",
-  code: "assets/icons/raw/com-laptop-code-svgrepo-com.svg",
-  book: "assets/icons/raw/book-closed-svgrepo-com.svg",
-  clipboard: "assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg",
-  file: "assets/icons/raw/file-folder-2-svgrepo-com.svg",
-  edit: "assets/icons/raw/edit.svg",
-  folder: "assets/icons/raw/folder-alt-svgrepo-com.svg",
-  "moon-stars": "assets/icons/raw/moon-stars.svg",
-  calendar: "assets/icons/raw/calendar-svgrepo-com.svg",
-  user: "assets/icons/raw/people-svgrepo-com.svg",
-  check: "assets/icons/raw/check-mark-circle-svgrepo-com.svg",
-  "progress-complete": "assets/icons/raw/progress-complete.svg",
-  star: "assets/icons/raw/star-fall-svgrepo-com.svg",
-  dashboard: "assets/icons/raw/dashboard-svgrepo-com.svg",
-  settings: "assets/icons/raw/setting-2-svgrepo-com.svg",
-  trash: "assets/icons/raw/trash.svg",
-  "steps-carreer": "assets/icons/raw/steps-carreer.svg"
+  analytics: "../assets/icons/raw/analytics-business-chart-finance-graph-money-svgrepo-com.svg",
+  brightness: "../assets/icons/raw/brightness.svg",
+  "circle-user": "../assets/icons/raw/circle-user.svg",
+  task: "../assets/icons/raw/tasks-app-svgrepo-com.svg",
+  code: "../assets/icons/raw/com-laptop-code-svgrepo-com.svg",
+  book: "../assets/icons/raw/book-closed-svgrepo-com.svg",
+  clipboard: "../assets/icons/raw/clipboard-checklist-2-svgrepo-com.svg",
+  file: "../assets/icons/raw/file-folder-2-svgrepo-com.svg",
+  edit: "../assets/icons/raw/edit.svg",
+  folder: "../assets/icons/raw/folder-alt-svgrepo-com.svg",
+  "moon-stars": "../assets/icons/raw/moon-stars.svg",
+  calendar: "../assets/icons/raw/calendar-svgrepo-com.svg",
+  user: "../assets/icons/raw/people-svgrepo-com.svg",
+  check: "../assets/icons/raw/check-mark-circle-svgrepo-com.svg",
+  "progress-complete": "../assets/icons/raw/progress-complete.svg",
+  star: "../assets/icons/raw/star-fall-svgrepo-com.svg",
+  dashboard: "../assets/icons/raw/dashboard-svgrepo-com.svg",
+  settings: "../assets/icons/raw/setting-2-svgrepo-com.svg",
+  trash: "../assets/icons/raw/trash.svg",
+  "steps-carreer": "../assets/icons/raw/steps-carreer.svg"
 };
 
 const translations = {
@@ -976,6 +976,7 @@ function getIconPath(iconName) {
 
 function getIconMarkup(iconName, className = "ui-icon") {
   const classes = className.split(" ").includes("ui-icon") ? className : `${className} ui-icon`;
+  // CSS resolves custom-property URLs where the mask rule is defined: styles/styles.css.
   return `<span class="${classes}" style="--icon-url: url('${escapeHtml(getIconPath(iconName))}')" aria-hidden="true"></span>`;
 }
 
