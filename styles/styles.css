@@ -3151,6 +3151,192 @@ tbody tr:hover {
   background: var(--color-surface-subtle);
 }
 
+/* Focused readability and surface micro-polish. */
+.subtle,
+.dashboard-quote,
+.local-card p,
+.nav-item,
+.chart-y-axis,
+.bar-label,
+.chart-legend,
+.calendar-weekdays,
+.task-category,
+.calendar-task-category,
+td:nth-child(4) {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.subtle,
+.dashboard-quote,
+.local-card p {
+  font-weight: 500;
+}
+
+.subtle {
+  line-height: 1.6;
+}
+
+.dashboard-quote {
+  line-height: 1.65;
+}
+
+.nav-item {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.local-card p {
+  line-height: 1.6;
+}
+
+.chart-y-axis,
+.bar-label,
+.chart-legend,
+.calendar-weekdays {
+  font-size: var(--font-size-metadata);
+  font-weight: 500;
+}
+
+.chart-legend {
+  gap: 10px;
+}
+
+.calendar-weekdays {
+  margin-bottom: 10px;
+}
+
+.task-category,
+.calendar-task-category {
+  font-size: var(--font-size-supporting);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.header-actions {
+  gap: 12px;
+}
+
+.header-search {
+  min-height: 52px;
+  font-size: 1rem;
+}
+
+.toolbar-button {
+  width: 48px;
+  min-width: 48px;
+  height: 50px;
+  min-height: 50px;
+}
+
+.language-button {
+  font-size: var(--font-size-metadata);
+  font-weight: 600;
+}
+
+.header-primary-button {
+  min-height: 50px;
+  padding-inline: 20px;
+  font-size: 1rem;
+}
+
+.table-wrap {
+  border-color: var(--color-border);
+}
+
+th {
+  color: var(--color-text-muted);
+  background: var(--color-surface-subtle);
+  font-size: var(--font-size-metadata);
+  font-weight: 600;
+}
+
+th,
+td {
+  padding-block: 18px;
+}
+
+td:nth-child(4) {
+  font-weight: 500;
+}
+
+tbody input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-success);
+}
+
+.row-actions {
+  gap: 6px;
+  padding: 5px;
+}
+
+.action-button {
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+}
+
+.calendar-day-cell {
+  min-height: 80px;
+  padding: 11px;
+}
+
+.calendar-day-number {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.calendar-day-indicators {
+  gap: 5px;
+}
+
+.calendar-day-indicators i {
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
+
+.calendar-day-cell.is-selected .calendar-day-indicators i {
+  box-shadow: 0 0 0 2px var(--color-action);
+}
+
+.selected-day-panel {
+  gap: 20px;
+  padding: 22px;
+}
+
+.selected-day-header {
+  padding-bottom: 16px;
+}
+
+@media (min-width: 901px) {
+  .card,
+  .calendar-month-card,
+  .selected-day-panel,
+  .table-wrap {
+    box-shadow: 0 1px 2px rgba(23, 32, 51, 0.04), 0 8px 20px rgba(23, 32, 51, 0.035);
+  }
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .calendar-month-card,
+[data-theme="dark"] .selected-day-panel,
+[data-theme="dark"] .table-wrap {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .nav-item,
+[data-theme="dark"] .chart-y-axis,
+[data-theme="dark"] .bar-label,
+[data-theme="dark"] .chart-legend,
+[data-theme="dark"] .calendar-weekdays,
+[data-theme="dark"] .task-category,
+[data-theme="dark"] .calendar-task-category,
+[data-theme="dark"] td:nth-child(4) {
+  color: var(--color-text-muted);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
